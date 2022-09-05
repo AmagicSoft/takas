@@ -737,6 +737,7 @@ userController.NewProduct = async (req) => {
                 marketvalue: req.marketvalueProduct,
                 subcategory:req.subcategoryProduct,
                 datecreated: hoy,
+                location:req.location,
                 typepublication:1,
                 status:1
             };
@@ -3824,6 +3825,91 @@ userController.pqrs = async (req) => {
 
 };
 
+//PQRs Web
+userController.pqrsweb = async (req) => {
+    //existe este usuario? 
+    try {       
+            let status=0;
+            if(req.flagPQRs==0){
+                status=34;//PREGUNTAS
+            }
+            if(req.flagPQRs==1){
+                status=35;//QUEJAS
+            }
+            // if(req.flagPQRs==2){
+            //     status=36;//RESPUESTAS
+            // }
+            if(req.flagPQRs==3){
+                status=37;//SUGERENCIAS
+            }
+            let now = new Date();
+            let hoy=date.format(now, 'YYYY-MM-DD HH:mm:ss');
+
+            let DataPQRs={
+                name: req.name,
+                email: req.email,
+                details: req.message,
+                datecreated: hoy,
+                status: status
+            }
+           
+
+            console.log(DataPQRs);
+            //let FlagTTk=req.FlagTTk;
+            //let statusTicket=30;                      
+
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+            if(status!=0){
+             response = await PQRsModel.pqrsweb(DataPQRs);
+            }
+            else{
+                response==null;
+            }
+                    
+        
+        //console.log(msgError);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                //data:datar,
+                msg: 'Se ha creado la PQRs exitosamente'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar crear una nueva PQRs'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
 
 //SolicitarMembresia
 userController.SolicitarMembresia = async (req) => {
@@ -4265,6 +4351,57 @@ userController.InterestedSubasTakas = async (req) => {
                 success: false,
                 status: '500',
                 msg: 'Error al intentar registar Subastakas como me interesa'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+
+userController.InterestedProduct = async (req) => {
+    try {
+        let msg="Se ha registrado Me interesa";
+        let FlagInterested= req.FlagInterested;
+        let status= 1;
+        if(FlagInterested==false){
+            status= 2;
+            msg="Se ha eliminado la indicación de Me interesa";
+        }
+        const DataInterested = {
+            idproduct: req.IdProduct,
+            iduser: req.IdUserProduct,
+            status: status
+            
+        };
+        console.log(DataInterested);
+        let response = await Interested.InterestedProduct(DataInterested,FlagInterested);
+
+       console.log(response);
+
+        let data = {};
+        if (response && response.result) {
+            let r = {};
+            r = response.result;
+
+            data = {
+                success: true,
+                status: '200',
+                Interested:req.FlagInterested,
+                msg: msg
+                //data: response
+            }
+        } else {
+
+           console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar registar Takas como me interesa'
             }
         }
         //validar si esta llegado vacio

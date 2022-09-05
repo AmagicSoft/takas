@@ -30,6 +30,33 @@ PQRsModel.pqrs = (DataPQRs) => {
  })
 };
 
+//Crear una nueva PQRs Web
+PQRsModel.pqrsweb = (DataPQRs) => {
+    return new Promise((resolve, reject) => {
+     if (pool) {
+         pool.query(
+            'INSERT INTO pqrs SET ?', DataPQRs,
+             (err, result) => {
+                // console.log(err);
+                // console.log(result);
+                 if (err) {
+                     resolve({
+                         'error': err
+                     })
+                 } else {
+                     resolve({
+                         'result': result
+                     })
+                 }
+
+             }
+         )
+         //return resultado;
+     }
+ })
+};
+
+
 //Crear Respuesta a una  PQRs
 PQRsModel.ResponsePQRs = (DataPQRs) => {
     return new Promise((resolve, reject) => {
