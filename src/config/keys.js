@@ -1,11 +1,11 @@
-// module.exports = {
-//     database:{
-//         host:'localhost',
-//         user:'root',
-//         password:'',
-//         database:'takas'
-//     }
-// }
+ /*module.exports = {
+     database:{
+         host:'localhost',
+         user:'root',
+         password:'',
+         database:'takas'
+     }
+ }*/
 
    
 

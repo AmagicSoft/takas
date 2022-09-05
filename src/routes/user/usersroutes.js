@@ -6,12 +6,33 @@ const notifications = require('../../lib/notifications.js');
 const config = require('../../config/config');
 const { check, validationResult } = require('express-validator');
 const userController = require('../../controllers/userscontroller');
+const useradmincontroller = require('../../controllers/useradmincontroller');
+
 //app.express();
 
 
 
 
 router.get('/prueba', function (req, res) {
+    //res.send('Inicio');
+    let data={
+        "title": "test",
+        "body": "mi descripcion",
+        "type": 0,
+        "status": 0,
+        "id": "hello",
+        "click_action": "FLUTTER_NOTIFICATION_CLICK"
+    };
+    let token="efTmlTE3uzA:APA91bFSLY9NlzIS0xeRjx0OoCsJdH3NQGI7E-yrU6OAx2VRqQeDd2WZR9CEzWg_BPlGf1H_nIO15L-GYmqHs3l4tc_8wgJf1l3RBTj7BxppuBQr8EYz43O6W3IPFCcRT4rUbV50UwFJ";
+    let titulo="Notificaciones Takas";
+    let detalle="Pruebas con primeras Notificaciones Takas";
+    notifications(token,titulo,detalle,data);
+    
+    res.send('Inicio');
+
+});
+
+router.post('/prueba2', function (req, res) {
     //res.send('Inicio');
     let data={
         "title": "test",
@@ -1232,6 +1253,7 @@ router.get('/listsubcategory', rutasProtegidas, async (req, res) => {
  * @apiParam {smallint} typemoneyProduct   required.
  * @apiParam {decimal} marketvalueProduct  required .
  * @apiParam {int} subcategoryProduct  required .
+ * @apiParam {int} location.
  * @apiParam {array} PreferecesProduct  optional array de enteros .
  * @apiParam {array} ImagesProduct  optional arrays de varchar .
  * 
@@ -1271,6 +1293,7 @@ router.post('/newproduct', rutasProtegidas,[
     check('typemoneyProduct', 'El tipo de moneda estar vacio ').not().isEmpty().exists(),
     check('marketvalueProduct', ' El precio es obligatoria').not().isEmpty().exists(),
     check('subcategoryProduct', ' la Contraseña es requerida').not().isEmpty().exists(),
+    check('location', ' Debes elegir la locacion del producto').not().isEmpty().exists(),
     check('PreferecesProduct', ' Debes elegir al menos una preferencia de negocio').not().isEmpty().exists(),
     check('ImagesProduct', 'Debes cargar al menos 1 Foto').not().isEmpty().exists()
 ], async (req, res) => {
@@ -5137,6 +5160,31 @@ router.post('/scorepublication', rutasProtegidas,[
 }
  */
 
+//CREAR NUEVA PQRS WEB - 
+router.post('/pqrsweb', [
+    check('name', 'El nombre es obligatorio').not().isEmpty().exists(),
+    check('email', 'El email es obligatorio').not().isEmpty().exists(),
+    check('message', 'El mensaje es obligatorio').not().isEmpty().exists(),
+    check('flagPQRs', 'El flagPQRs es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+    console.log('pqrsweb');
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await userController.pqrsweb(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
 //CREAR NUEVA PQRS - 
 router.post('/pqrs', rutasProtegidas,[
     check('idfirebaseUser', 'El idfirebaseUser es obligatorio').not().isEmpty().exists(),
@@ -5723,6 +5771,95 @@ router.post('/interestedsubastakas', rutasProtegidas, [
     })    
 
 //////////////////
+
+router.post('/interestedproduct', rutasProtegidas, [
+    check('IdUserProduct', 'El IdUserProduct  es obligatorio').not().isEmpty().exists(),
+    check('IdProduct', 'El IdProduct  es obligatorio').not().isEmpty().exists(),
+    check('FlagInterested', 'El FlagInterested es obligatorio').not().isEmpty().exists()
+    ],async (req, res) => {
+    
+        const error = validationResult(req);
+
+        if (error.array().length != 0) {
+            return res.status(422).json({ errores: error.array(), msg: 'Error' });
+        }
+        let response = await userController.InterestedProduct(req.body);
+    
+        if (response.status == 'ko') {
+            return res.status(500).json({ error: 'Error' })
+        }
+        console.log(response);
+        return res.status(response.data.status).json(response.data)
+    
+    })  ;  
+
+//////////////////
+
+    /**
+ * @api {post} /user/interestedproduct 5 interestedproduct
+ * @apiName interestedproduct - Me interesa Product
+ * @apiGroup Takas
+ * 
+ * 
+ * @apiHeaderExample {varchar}Content-Type:
+ *                 "value": "application/json" 
+ * @apiHeaderExample {varchar} access-token:
+ *                 {"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZ25vcmVFeHBpcmF0aW9uIjp0cnVlLCJpYXQiOjE2MDEwNDkzNjIsImV4cCI6MTYwMTEzNTc2Mn0.-UiJBviqct6ZD-IIa29VeKuaIfd783YXSrPIuveiSkY" }
+ *
+ *
+ * @apiParam {int} IdUserProduct required.
+ * @apiParam {int} IdProduct required.
+ * @apiParam {boolean} FlagInterested required.
+ * 
+ * 
+ * 
+ * @apiSuccess {boolean} success of the Product.
+ * @apiSuccess {int} status 200 of the Product.
+ * @apiSuccess {string} msg   of the Product.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *   {
+    "success": true,
+    "status": "200",
+    "Interested": true,
+    "msg": "Se ha registrado Me interesa"
+}
+ *
+ * @apiError UserNotFound The id of the Product was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+    "success": false,
+    "status":: "500",
+    "msg": "Error al intentar registar Takas como me interesa"
+}
+ **/
+
+router.post('/interestedproduct2 ', rutasProtegidas, [
+    check('IdUserProduct ', 'El IdUserProduct  es obligatorio').not().isEmpty().exists(),
+    check('IdProduct ', 'El IdProduct  es obligatorio').not().isEmpty().exists(),
+    check('FlagInterested', 'El FlagInterested es obligatorio').not().isEmpty().exists()
+    ],async (req, res) => {
+    
+        const error = validationResult(req);
+
+        if (error.array().length != 0) {
+            return res.status(422).json({ errores: error.array(), msg: 'Error' });
+        }
+        let response = await userController.InterestedProduct(req.body);
+    
+        if (response.status == 'ko') {
+            return res.status(500).json({ error: 'Error' })
+        }
+        console.log(response);
+        return res.status(response.data.status).json(response.data)
+    
+    })    
+
+//////////////////
+
 /**
  * @api {post} /user/listodo 6 listodo
  * @apiName listodo - Listar todas Publicaciones
@@ -6118,6 +6255,150 @@ router.post('/getchatroomsubastakas', rutasProtegidas, [
 //         return res.status(response.data.status).json(response.data)
     
 //     }) 
+
+/*************************************/
+/**************** User Admin******************/
+
+
+/**
+ * @api {post} /user/newUser_Admin  
+ * @apiName  newUser - Registro De Usuario Admin
+ * @apiGroup User
+ * 
+ *      
+ * 
+ * @apiHeaderExample {varchar}Content-Type:
+ *                 "value": "application/json" 
+ * 
+ *   
+ * @apiParam {varchar} idfirebaseUser unique required.
+ * @apiParam {varchar} imgUser unique required.
+ * @apiParam {int} codCity  optional. 
+ * @apiParam {varchar} fullnameUser required.
+ * @apiParam {varchar} phonenumberUser  unique required.
+ * @apiParam {varchar} emailUser   required.
+ * @apiParam {varchar} passwordUser  required .
+ * @apiParam {varchar} tycUser  required .
+ * @apiParam {varchar} urlimgUser  optional .
+ * 
+ *
+ * @apiSuccess {boolean} success of the User.
+ * @apiSuccess {int} status 200 of the User.
+ * @apiSuccess {string} msg   of the User.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ {
+    "success": true,
+    "status":: "200",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZ25vcmVFeHBpcmF0aW9uIjp0cnVlLCJpYXQiOjE2MDE5MTYzMjUsImV4cCI6MTYwMjAwMjcyNX0.KBsaWobyOo2_NRmrbhFDisMfvvD9oddNFwfK0D6imC0",
+    "msg": "Usuario Registrado con éxito"
+}
+ *
+ * @apiError UserNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+                success: false,
+                status: '500',
+                msgerr: 'response.error.sqlMessage',
+                codeerr: 'response.error.code',
+                noerr: 'response.error.errno'
+        }
+ */
+//Crear newUser- 
+router.post('/newUser_Admin', [
+    check('idfirebaseUser', 'El idfirebase es obligatorio').not().isEmpty().exists(),
+    check('fullnameUser', 'El Nombre del usuario es obligatorio').not().isEmpty().exists(),
+    check('phonenumberUser', 'El númeto telefónico es obligatorio').not().isEmpty().exists(),
+    check('emailUser', 'El email no puede estra vacio y debe corresponder al formato').isEmail().exists(),
+    check('passwordUser', ' La contraseña es obligatoria').not().isEmpty().exists(),
+    check('tycUser', ' Es requerido aceptar términos y condisiones').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await useradmincontroller.newUser_Admin(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+/******* */
+
+/**
+ * @api {post} /user/autenticar_admin
+ * @apiName autenticarAdmin - Login UserAdmin
+ * @apiGroup User
+ * 
+ * 
+ * @apiHeaderExample {varchar}Content-Type:
+ *                 "value": "application/json" 
+ * 
+ *
+ * @apiParam {varchar}  idfirebase  required.
+ * @apiParam {varchar} passworduser  required.
+ * @apiParam {varchar} emailuser  required.
+ 
+ *
+ * @apiSuccess {boolean} success of the User.
+ * @apiSuccess {int} status 200 of the User.
+ * @apiSuccess {string} msg   of the User.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+    "success": true,
+    "status": "200",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZ25vcmVFeHBpcmF0aW9uIjp0cnVlLCJpYXQiOjE2MTA0OTAxMDAsImV4cCI6MTYxMzA4MjEwMH0.5wtRrcb4xd08T7VlIlzMYTmdwjhLPFdb3rPavquOo7I",
+    "Email": "anailysrodriguez@gmail.com",
+    "Fullname": "anailys rodriguez",
+    "PhoneNumber": null,
+    "ImgUrl": "https://lh3.googleusercontent.com/a-/AOh14GghAJLELlkIz090ubKjqqHdki33JMljFn5d3RHVF4Q=s96-c",
+    "msg": "Usuario Autenticado con éxito"
+}
+ *
+ * @apiError UserNotFound The id of the Domiciliary was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+    "success": false,
+    "status":: "500",
+    "msg": "Error al Autenticar"
+}
+ */
+router.post('/autenticar_admin', [
+    check('idfirebaseUser', 'El idfirebase el obligatorio').not().isEmpty().exists(),
+    check('emailUser', 'El emailuser el obligatorio').isEmail().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+        if (error.array().length != 0) {
+            return res.status(422).json({ errores: error.array(), msg: 'Error' });
+        }
+
+    let response = await userController.Autenticar(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+
    
 
 module.exports = router;
