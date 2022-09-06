@@ -447,9 +447,9 @@ ProductModel.ListMisProductos = (UserData,ProductData,estatus,callback) => {
             let armaresult={};
             let consulta="";
             if(estatus!=0){
-                consulta="SELECT DISTINCT idproduct,datepublication,iduser,name,details,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.weight,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct  WHERE iduser='"+UserData.iduser+"' AND status="+estatus+" AND p.id=idproduct AND typepublication=1";
+                consulta="SELECT DISTINCT idproduct,datepublication,iduser,name,details,location,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.weight,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct  WHERE iduser='"+UserData.iduser+"' AND status="+estatus+" AND p.id=idproduct AND typepublication=1";
             }else{
-                consulta="SELECT DISTINCT idproduct,datepublication,iduser,name,details,typemoney,marketvalue,subcategory,typepublication,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct  WHERE iduser='"+UserData.iduser+"' AND p.id=idproduct AND typepublication=1";
+                consulta="SELECT DISTINCT idproduct,datepublication,iduser,name,details,location,typemoney,marketvalue,subcategory,typepublication,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct  WHERE iduser='"+UserData.iduser+"' AND p.id=idproduct AND typepublication=1";
             }
             pool.query(consulta,
                 async(err, result) => {
@@ -482,9 +482,9 @@ ProductModel.ListProductos = (UserData,ProductData,callback) => {
 
             let armaresult={};
             pool.query(
-                "SELECT DISTINCT RAND(idproduct),idproduct, datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.weight,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct WHERE iduser<>'"+UserData.iduser+"' AND status="+ProductData.status+" AND p.id=idproduct AND typepublication=1   ORDER BY datepublication DESC LIMIT 50",
+                "SELECT DISTINCT RAND(idproduct),idproduct, datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.location,p.size,p.weight,status FROM product AS p INNER JOIN  imgproduct AS i ON p.id=idproduct WHERE iduser<>'"+UserData.iduser+"' AND status="+ProductData.status+" AND p.id=idproduct AND typepublication=1   ORDER BY datepublication DESC LIMIT 50",
                 async(err, result) => {
-                    //console.log(result);                  
+                    console.log(result);                  
                    
                     if (err) {
                         resolve({
@@ -616,13 +616,23 @@ ProductModel.armaresult = (result) => {
                     let datecreatedt = new Date(element.datecreated);
                     let datecreated = date.format(datecreatedt, 'YYYY-MM-DD HH:mm:ss');
                     //location
+                    console.log("location");
+                    console.log(element.location);
                     let location = element.location;
+                    //Interested
+                    interested=await ProductModel.interestedSubastacas(element);
+                        console.log("interested: "+interested.interested[0]);
+                        let flagInterested=false;
+                        if(interested.interested[0]!= undefined){
+                            flagInterested=true;
+                        }
                     //console.log(element.typepublication);
                    
                     if(element.typepublication==1){   
                         arr.push({
                             "idproduct": element.idproduct,
                             "datecreated":datecreated,
+                            "interested":interested,
                             "iduser": element.iduser,
                             "nuevo":nuevo,
                             "subcategory": element.subcategory,
@@ -661,12 +671,7 @@ ProductModel.armaresult = (result) => {
                         if(valFinished > 0){
                             finished=true;
                         }
-                        interested=await ProductModel.interestedSubastacas(element);
-                        console.log("interested: "+interested.interested[0]);
-                        let flagInterested=false;
-                        if(interested.interested[0]!= undefined){
-                            flagInterested=true;
-                        }
+                        
 
                         let fechaserver = new Date();
                         let fechactual=date.format(fechaserver, 'YYYY-MM-DD HH:mm:ss');
@@ -686,7 +691,8 @@ ProductModel.armaresult = (result) => {
 //
                         arr.push({
                             "idproduct": element.idproduct,
-                            "datecreated":datecreated,                            
+                            "datecreated":datecreated, 
+                            "interested":interested,                           
                             "activityTime":timeActive,
                             "TimeTotal":TimeTotal,
                             "TimeEnd":DiferenciafechasFin2,
@@ -1715,9 +1721,9 @@ ProductModel.armaresulT = (result) => {
 ///////////////////////////
 ProductModel.interestedSubastacas = (element) => {
     return new Promise((resolve, reject) => {
-        console.log('SELECT id FROM interested WHERE iduser="'+element.iduser+'" AND idsubastakas='+element.idproduct+' AND status=1');
+        console.log('SELECT id FROM interested WHERE iduser="'+element.iduser+'" AND idproduct='+element.idproduct+' AND status=1');
         pool.query(
-            'SELECT id FROM interested WHERE iduser=? AND idsubastakas=? AND status=1',
+            'SELECT id FROM interested WHERE iduser=? AND idproduct=? AND status=1',
             [element.iduser,
             element.idproduct
             ],
