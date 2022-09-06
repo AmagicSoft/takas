@@ -1317,17 +1317,28 @@ ProductModel.armaresult2 = (result,iduser) => {
                     //Transformar
                     let datecreatedt = new Date(element.datecreated);
                     let datecreated = date.format(datecreatedt, 'YYYY-MM-DD HH:mm:ss');
+                    //location
+                    let location = element.location
+                    //interested
+                    //Interested
+                    interested=await ProductModel.interestedSubastacas(element);
+                        console.log("interested: "+interested.interested[0]);
+                        let flagInterested=false;
+                        if(interested.interested[0]!= undefined){
+                            flagInterested=true;
+                        }
                     //console.log(element.typepublication);
                    
                     if(element.typepublication==1){   
                         arr.push({
                             "idproduct": element.idproduct,
                             "datecreated":datecreated,
+                            "location":location,
                             "activityTime":null,
                             "Anfitrion":null,
                             "TimeTotal":null,
                             "TimeEnd":null,
-                            "flagInterested":null,
+                            "flagInterested":flagInterested,
                             "started":null,
                             "finished":null,
                             "begin":null,
@@ -1370,12 +1381,12 @@ ProductModel.armaresult2 = (result,iduser) => {
                         if(valFinished > 0){
                             finished=true;
                         }
-                        interested=await ProductModel.interestedSubastacas(element);
+                        /*interested=await ProductModel.interestedSubastacas(element);
                         console.log("interested: "+interested.interested[0]);
                         let flagInterested=false;
                         if(interested.interested[0]!= undefined){
                             flagInterested=true;
-                        }
+                        }*/
 
                         let fechaserver = new Date();
                         let fechactual=date.format(fechaserver, 'YYYY-MM-DD HH:mm:ss');
@@ -1576,11 +1587,11 @@ ProductModel.LisTodo = (SubasTakasData) => {
     return new Promise((resolve, reject) => {
         if (pool) {
             let armaresult={};
-            console.log("SELECT DISTINCT RAND(id),id, p.datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,datebeginst,dateendst,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.weight,status FROM product AS p WHERE iduser<>'"+SubasTakasData.iduser+"' AND status IN (2,3,26) ORDER BY datepublication DESC LIMIT 50");
+           // console.log("SELECT DISTINCT RAND(id),id, p.datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,datebeginst,dateendst,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.location,p.weight,status FROM product AS p WHERE iduser<>'"+SubasTakasData.iduser+"' AND status IN (1,5,2,3,26) ORDER BY datepublication DESC LIMIT 50");
             pool.query(
-                "SELECT DISTINCT RAND(id),id as idproduct, p.datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,datebeginst,dateendst,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.weight,status FROM product AS p WHERE iduser<>'"+SubasTakasData.iduser+"' AND status IN (2,3,26) ORDER BY datepublication DESC LIMIT 50",
+                "SELECT DISTINCT RAND(id),id as idproduct, p.datepublication ,DATE_FORMAT(datepublication, '%d/%m/%Y %H:%i:%s') AS datecreated,iduser,name,details,datebeginst,dateendst,typemoney,marketvalue,subcategory,typepublication,p.conditions,p.size,p.location,p.weight,status FROM product AS p WHERE iduser<>'"+SubasTakasData.iduser+"' AND status IN (1,5,2,3,26) ORDER BY datepublication DESC LIMIT 50",
                 async(err, result) => {
-                    //console.log(result);
+                    console.log(result);
                    
                     if (err) {
                         resolve({
