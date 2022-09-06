@@ -615,6 +615,8 @@ ProductModel.armaresult = (result) => {
                     //Transformar
                     let datecreatedt = new Date(element.datecreated);
                     let datecreated = date.format(datecreatedt, 'YYYY-MM-DD HH:mm:ss');
+                    //location
+                    let location = element.location;
                     //console.log(element.typepublication);
                    
                     if(element.typepublication==1){   
@@ -634,6 +636,7 @@ ProductModel.armaresult = (result) => {
                             "weight": element.weight,
                             "status": statusProduct,
                             "editable": Editable,
+                            "location": location,
                             "CantidadOfertas":CantidadOfertas.CantOfertas,
                             "ProductImages":img.ImagesProduct,
                             "Preferences":prefe.Preferences
@@ -705,6 +708,7 @@ ProductModel.armaresult = (result) => {
                             "weight": element.weight,
                             "status": statusProduct,
                             "editable": Editable,
+                            "location": location,
                             "CantidadOfertas":CantidadOfertas.CantOfertas,
                             "ProductImages":img.ImagesProduct
                             

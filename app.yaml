@@ -7,10 +7,10 @@ env_variables:
   SQL_USER: root
   SQL_PASSWORD: lpiP7kP36BrJK4m8
   SQL_DATABASE: takas
-  INSTANCE_CONNECTION_NAME: takas-desarrollo-y-calidad:us-east1:pctakas
+  INSTANCE_CONNECTION_NAME: takas-300716:us-east1:takas
   
 beta_settings:
-  cloud_sql_instances: takas-desarrollo-y-calidad:us-east1:pctakas
+  cloud_sql_instances: takas-300716:us-east1:takas
 
 handlers:
 - url: /.*
