@@ -5167,6 +5167,8 @@ router.post('/pqrsweb', [
     check('message', 'El mensaje es obligatorio').not().isEmpty().exists(),
     check('flagPQRs', 'El flagPQRs es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+
 
     const error = validationResult(req);
     console.log('pqrsweb');
