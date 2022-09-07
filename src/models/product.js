@@ -620,7 +620,7 @@ ProductModel.armaresult = (result) => {
                     console.log(element.location);
                     let location = element.location;
                     //Interested
-                    interested=await ProductModel.interestedSubastacas(element);
+                    interested=await ProductModel.interestedSubastacas(element,iduser);
                         console.log("interested: "+interested.interested[0]);
                         let flagInterested=false;
                         if(interested.interested[0]!= undefined){
@@ -1321,7 +1321,7 @@ ProductModel.armaresult2 = (result,iduser) => {
                     let location = element.location
                     //interested
                     //Interested
-                    interested=await ProductModel.interestedSubastacas(element);
+                    interested=await ProductModel.interestedSubastacas(element,iduser);
                         console.log("interested: "+interested.interested[0]);
                         let flagInterested=false;
                         if(interested.interested[0]!= undefined){
@@ -1684,7 +1684,7 @@ ProductModel.armaresulT = (result) => {
                     if(Diferenciafechas>20){
                         Editable=false;
                     }
-                    interested=await ProductModel.interestedSubastacas(element);
+                    interested=await ProductModel.interestedSubastacas(element,iduser);
                     console.log("interested: "+interested.interested[0]);
                     let flagInterested=false;
                     if(interested.interested[0]!= undefined){
@@ -1730,18 +1730,18 @@ ProductModel.armaresulT = (result) => {
 
 } 
 ///////////////////////////
-ProductModel.interestedSubastacas = (element) => {
+ProductModel.interestedSubastacas = (element,iduser) => {
     return new Promise((resolve, reject) => {
-        console.log('SELECT id FROM interested WHERE iduser="'+element.iduser+'" AND idproduct='+element.idproduct+' AND status=1');
+        console.log('SELECT id FROM interested WHERE iduser="'+iduser+'" AND idproduct='+element.idproduct+' AND status=1');
         pool.query(
             'SELECT id FROM interested WHERE iduser=? AND idproduct=? AND status=1',
-            [element.iduser,
+            [iduser,
             element.idproduct
             ],
             (err2, result2) => {
                  
-                //console.log(element.id);   
-                //console.log(element.namec);   
+                console.log(iduser);   
+                console.log(element.idproduct);   
                 //console.log(result2[1].preference);
                 if (err2) {
                     resolve({
