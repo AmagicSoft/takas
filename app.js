@@ -51,6 +51,12 @@ app.use((req,res,next)=>{
     app.locals.error = req.flash('error');
     app.locals.success = req.flash('success');
     app.locals.warning = req.flash('warning');
+
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+
     next();
 });
 
