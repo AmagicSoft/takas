@@ -1,4 +1,5 @@
 const express = require('express');
+//const cors = require('cors')
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const rutasProtegidas = require('../../lib/rutasprotegidas');
@@ -10,9 +11,14 @@ const useradmincontroller = require('../../controllers/useradmincontroller');
 
 //app.express();
 
+const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
 
 
 
+//router.use(cors());
 router.get('/prueba', function (req, res) {
     //res.send('Inicio');
     let data={
@@ -5167,12 +5173,8 @@ router.post('/pqrsweb', [
     check('message', 'El mensaje es obligatorio').not().isEmpty().exists(),
     check('flagPQRs', 'El flagPQRs es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
-    res.header('Access-Control-Allow-Origin','*');
-    res.header('Access-Control-Allow-Headers','Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
 
-
+   // res.json({msg: 'This is CORS-enabled for a Single Route'})
 
     const error = validationResult(req);
     console.log('pqrsweb');
