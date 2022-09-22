@@ -135,7 +135,7 @@ router.post('/autenticar', (req, res) => {
  */
 
 //CREAR CÓDIGO PARA REISTRO DE NUEVO USUARIO
-router.post('/createcode', rutasProtegidas,[
+router.post('/createcode',[
     check('IdUserCreator', 'El ID del usuario creador del código es obligatorio').not().isEmpty().exists(),
     check('Privilegio', 'El privilegio es obligatorio').not().isEmpty().exists()
   ], async (req, res) => {
@@ -344,7 +344,7 @@ router.post('/newadminuser',[
  */
 
 //CREAR RESPUESTA DE PQRs- 
-router.post('/responsepqrs', rutasProtegidas,[
+router.post('/responsepqrs', [
     check('idPQRs', 'El idPQRs es obligatorio').not().isEmpty().exists(),
     check('idfirebaseUser', 'El idfirebaseUser es obligatorio').not().isEmpty().exists(),
     check('detailsPQRs', 'El detailsPQRs es obligatorio').not().isEmpty().exists(),
@@ -589,7 +589,7 @@ router.post('/gestionmembership', rutasProtegidas,[
  */
 
 //Listar Usuarios- 
-router.post('/listusers', rutasProtegidas,[
+router.post('/listusers',[
     check('TypeConsulta', 'El TypeConsulta es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
 
@@ -694,6 +694,28 @@ router.post('/listpublications', rutasProtegidas,[
     return res.status(response.data.status).json(response.data)
 
 })
+
+//Listar Categorias- 
+router.post('/listcategorys',[
+    check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
+    check('StatusP', 'El StatusP es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListCategorys(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+}) 
 
 //Listar Tombotakas 
 /**
