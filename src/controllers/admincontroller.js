@@ -282,7 +282,7 @@ AdminController.LoginAdminUser = async (req,sess) => {
             }else{
                 data = {
                     success: true,
-                    status: '200',
+                    status: '500',
                     msg: 'Usuario y password no coinsiden'
                     //data: response
                 }
@@ -610,7 +610,81 @@ AdminController.ListUsers = async (req) => {
 
 };
 
+//ListCategorys
+AdminController.ListCategorys = async (req) => {
+    //existe este usuario? 
+    try {       
+            let status=0;
+            if(req.StatusP==0){
+                status=3;
+            }
+            if(req.StatusP==1){
+                status=4;
+            }
+            if(req.StatusP==2){
+                status=5;
+            }
+            if(req.StatusP==3){
+                status=26;
+            }
+             //DEFINIR SATATUS DE USERS
+             let Consulta="";
+             if(req.TypeP==1){
+                 Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO
+             }
+             if(req.TypeP==2){
+                Consulta="SELECT * FROM mastercategory WHERE typepublication=2 ";//SUBASTAKEAR
+             }
+             if(req.TypeP==3){
+                Consulta="SELECT * FROM mastercategory WHERE typepublication=3 ";//SERVITAKASTEAR
+             }
 
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+             response = await Product.ListPublications(Consulta);
+                 
+        
+        //console.log(msgError);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                data:r,
+                msg: 'Lista de Publicaciones con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar Listar Publicaciones'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
 
 //ListPublications
 AdminController.ListPublications = async (req) => {
@@ -964,7 +1038,8 @@ AdminController.CantUsersRegistrados = async (req) => {
         if (response.result) {
             let r = {};
             r = response.result;
-            //console.log(response.result);
+            let cantRU = response.result.length;
+            console.log(response.result.length);
             if(response.result.length>0){
                 datar=response.result[0]
             }
@@ -973,7 +1048,7 @@ AdminController.CantUsersRegistrados = async (req) => {
             data = {
                 success: true,
                 status: '200',
-                data:r,
+                data:cantRU,
                 msg: 'Cantidad de Registrados según fecha'
                 //data: response
             }

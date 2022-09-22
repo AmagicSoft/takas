@@ -592,7 +592,7 @@ userModel.CantUsersRegistrados = (inicio, fin) => {
                         })
                     } else {
                         resolve({
-                            'result': result[0]
+                            'result': result
                         })
                     }
 
