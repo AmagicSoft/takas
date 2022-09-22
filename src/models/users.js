@@ -581,10 +581,11 @@ userModel.DeleteSUser = (id) => {
 userModel.CantUsersRegistrados = (inicio, fin) => {
     return new Promise((resolve, reject) => {
         if (pool)
+        console.log("SELECT COUNT(id) AS CantRegistros FROM users WHERE  datecreated  BETWEEN '" + inicio + "' AND '" + fin + "' GROUP BY id");
             pool.query(
-                "SELECT COUNT(id) AS CantRegistros FROM users WHERE status=1 AND datecreated  BETWEEN '" + inicio + "' AND '" + fin + "' GROUP BY id",
+                "SELECT COUNT(id) AS CantRegistros FROM users WHERE  datecreated  BETWEEN '" + inicio + "' AND '" + fin + "' GROUP BY id",
                 (err, result) => {
-                    console.log(err);
+                    //console.log(err);
                     if (err) {
                         resolve({
                             'error': err

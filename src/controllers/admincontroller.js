@@ -939,7 +939,7 @@ AdminController.CantUsersRegistrados = async (req) => {
             let hoy=date.format(now, 'YYYY-MM-DD');
             let inicio=hoy;
             let fin=hoy;
-
+           
             if(req.DateInicio!=null){
                 inicio=req.DateInicio;
             }
@@ -947,15 +947,17 @@ AdminController.CantUsersRegistrados = async (req) => {
                 fin=req.DateFin;
             }
 
+            console.log("DateInicio");
+            console.log(req.DateInicio);
+            console.log(inicio);
+            console.log("DateFin");
+            console.log(req.DateFin);
+            console.log(fin);
+
             let msgError="";            
 
              let response ={};
-
-        // && lengthkw<=topeKW 
              response = await User.CantUsersRegistrados(inicio,fin);
-                 
-        
-        console.log(inicio);
 
         let data = {};
         let datar = [];
@@ -980,8 +982,6 @@ AdminController.CantUsersRegistrados = async (req) => {
             data = {
                 success: false,
                 status: '500',
-               // data: response.error,
-               // data: msgError,
                 msg: 'Error al intentar Obtener cantidad de registros según fecha'
             }
         }

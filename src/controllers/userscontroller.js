@@ -3911,6 +3911,52 @@ userController.pqrsweb = async (req) => {
 };
 
 
+//List PQRs Web
+userController.listpqrs = async (req) => {
+    //existe este usuario? 
+    try {   
+            let msgError="";            
+
+             let response ={};
+             response = await PQRsModel.listpqrs();
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                data:response.result,
+                msg: 'Lista de PQRS'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar crear una nueva PQRs'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
 //SolicitarMembresia
 userController.SolicitarMembresia = async (req) => {
     //existe este usuario? 

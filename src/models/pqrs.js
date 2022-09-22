@@ -56,6 +56,32 @@ PQRsModel.pqrsweb = (DataPQRs) => {
  })
 };
 
+//Crear una nueva PQRs Web
+PQRsModel.listpqrs = () => {
+    return new Promise((resolve, reject) => {
+     if (pool) {
+         pool.query(
+            'SELECT * FROM pqrs',
+             (err, result) => {
+                //console.log(resut);
+                if (err) {
+                    resolve({
+                        'error': err
+                    })
+                } else {
+                    console.log("result "+result);
+                    resolve({
+                        'result': result
+                    })  
+                }
+
+             }
+         )
+         //return resultado;
+     }
+ })
+};
+
 
 //Crear Respuesta a una  PQRs
 PQRsModel.ResponsePQRs = (DataPQRs) => {
