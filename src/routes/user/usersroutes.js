@@ -5279,6 +5279,29 @@ router.post('/solicitarmembresia', rutasProtegidas,[
 
 })
 
+//////////////////////////////
+
+//CREAR NUEVA PQRS WEB - 
+router.get('/listpqrs', async (req, res) => {
+
+   // res.json({msg: 'This is CORS-enabled for a Single Route'})
+
+    const error = validationResult(req);
+    console.log('List pqrs');
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await userController.listpqrs(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
 
 
 

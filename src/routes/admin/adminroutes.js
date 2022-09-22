@@ -993,7 +993,7 @@ router.post('/listombotakas', rutasProtegidas,[
  */
 
 //Listar las tombotakas- 
-router.post('/listpqrs', rutasProtegidas,[
+router.post('/listpqrs',[
     check('FlagPQRs', 'El FlagPQRs es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
 
@@ -1137,7 +1137,7 @@ router.post('/DeleteSUser', rutasProtegidas,[
     "msg": "Error al intentar Obtener cantidad de registros según fecha"
 }
  */
-router.post('/cantusersregistrados', rutasProtegidas, async (req, res) => {
+router.post('/cantusersregistrados', async (req, res) => {
 
     const error = validationResult(req);
 
