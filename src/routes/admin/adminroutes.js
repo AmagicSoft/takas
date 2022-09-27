@@ -695,6 +695,29 @@ router.post('/listpublications', rutasProtegidas,[
 
 })
 
+//crear Categorias- 
+router.post('/createcategory',[
+    check('name', 'El nombre es obligatorio').not().isEmpty().exists(),
+    check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
+    check('icon', 'El link de icon es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.CreateCategory(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+}) 
+
 //Listar Categorias- 
 router.post('/listcategorys',[
     check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
