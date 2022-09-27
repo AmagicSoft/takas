@@ -364,7 +364,7 @@ AdminController.ResponsePQRs = async (req) => {
                 success: true,
                 status: '200',
                 //data:datar,
-                msg: 'Se ha creado respuesta a la PQRs exitosamente'
+                msg: 'La PQRs se ha respondido exitosamente'
                 //data: response
             }
         } else {
@@ -656,6 +656,113 @@ AdminController.CreateCategory = async (req) => {
                 data: response.error,
                // data: msgError,
                 msg: 'Error al intentar crear una nueva categoría '
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+//UpdateCategory
+AdminController.UpdateCategory = async (req) => {
+    //existe este usuario? 
+    try {       
+             let Consulta="UPDATE  mastercategory SET namec = '"+req.nameC+"',typepublication="+req.typePC+",iconc='"+req.iconC+"' WHERE id ="+req.idC;
+             
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+             response = await Product.ListPublications(Consulta);
+                 
+        
+        //console.log(msgError);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+               // data:r,
+                msg: 'Categoría Editada con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar editar una nueva categoría '
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+
+//DeleteCategory
+AdminController.DeleteCategory = async (req) => {
+    //existe este usuario? 
+    try {       
+             let Consulta="UPDATE  mastercategory SET status = 0 WHERE id ="+req.idC;
+             
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+             response = await Product.ListPublications(Consulta);
+                 
+        
+        //console.log(msgError);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+               // data:r,
+                msg: 'Categoría eliminada con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar eliminar una nueva categoría '
             }
         }
         //validar si esta llegado vacio
@@ -960,6 +1067,9 @@ AdminController.ListPQRs = async (req) => {
             if(req.FlagPQRs==3){
                 status=37;
             }
+            if(req.FlagPQRs==5){
+                status=38;
+            }
           
 
             let msgError="";            
@@ -998,6 +1108,54 @@ AdminController.ListPQRs = async (req) => {
                // data: response.error,
                // data: msgError,
                 msg: 'Error al intentar Listar PQRs'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+//Delete PQRs
+AdminController.DeletePQRs = async (req) => {
+    //existe este usuario? 
+    try {       
+            let status=38;
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+             response = await PQRsModel.DeletePQRs(req.idPQRs);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                msg: 'PQRs archivada con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar archivar PQRs'
             }
         }
         //validar si esta llegado vacio

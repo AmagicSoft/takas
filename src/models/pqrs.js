@@ -144,5 +144,33 @@ PQRsModel.ListPQRs = (status) => {
  })
 };
 
+//lista de PQRs
+PQRsModel.DeletePQRs = (id) => {
+    return new Promise((resolve, reject) => {
+     if (pool) {
+         let consulta="UPDATE pqrs SET status = 38 WHERE id="+id;
+         //console.log(status);
+         pool.query(
+            consulta,
+             (err, result) => {
+                // console.log(err);
+                // console.log(result);
+                 if (err) {
+                     resolve({
+                         'error': err
+                     })
+                 } else {
+                     resolve({
+                         'result': result
+                     })
+                 }
+
+             }
+         )
+         //return resultado;
+     }
+ })
+};
+
 
 module.exports = PQRsModel;

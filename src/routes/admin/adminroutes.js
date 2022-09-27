@@ -987,7 +987,7 @@ router.post('/listombotakas', rutasProtegidas,[
  * @apiHeaderExample {varchar}Content-Type:
  *                 "value": "application/json" 
  * 
- * @apiParam {varchar} FlagPQRs  Reqired. PREGUNTA = 0, QUEJAS=1, RESPUESTAS=2, SUGERENCIAS=3, TODO=4
+ * @apiParam {varchar} FlagPQRs  Reqired. PREGUNTA = 0, QUEJAS=1, RESPUESTAS=2, SUGERENCIAS=3,TODO=4, ARCHIVADO= 5
 
  * 
  *
@@ -1118,6 +1118,27 @@ router.post('/listpqrs',[
 }
  */
 
+//Archivar pqrs
+router.post('/deletepqrs',[
+    check('idPQRs', 'El idPQRs es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.DeletePQRs(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
 
 //Eliminación Lógica de Usuario 
 router.post('/DeleteSUser', rutasProtegidas,[
@@ -1131,6 +1152,51 @@ router.post('/DeleteSUser', rutasProtegidas,[
     }
 
     let response = await AdminController.DeleteSUser(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Editar Categoría
+router.post('/updatecategory',[
+    check('idC', 'El idC es obligatorio').not().isEmpty().exists(),
+    check('nameC', 'El nameC es obligatorio').not().isEmpty().exists(),
+    check('typePC', 'El typePC es obligatorio').not().isEmpty().exists(),
+    check('iconC', 'El iconC es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.UpdateCategory(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Eliminar Categoría
+router.post('/deletecategory',[
+    check('idC', 'El idC es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.DeleteCategory(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
