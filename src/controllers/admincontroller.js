@@ -610,6 +610,185 @@ AdminController.ListUsers = async (req) => {
 
 };
 
+//List Admins
+AdminController.ListAdmins = async (req) => {
+    //existe este usuario? 
+    try {       
+            let Consulta="";           
+
+
+            //ASIGNAR CONSULTA
+            if(req.TypeConsulta==0){
+                Consulta="SELECT * FROM usersadmin";//SIN FILTRO
+            }
+            if(req.TypeConsulta==1){
+                Consulta="SELECT * FROM usersadmin where status='"+req.TypeConsulta+"'";//FILTRAR POR USUARIOS ACTIVOS
+            }
+            if(req.TypeConsulta==2){
+                Consulta="SELECT * FROM usersadmin where status!=1";//FILTRAR POR USUARIOS INACTIVOS
+            }
+            console.log(Consulta);                     
+
+            let msgError="";            
+
+             let response ={};
+             response = await User.ListUsers(Consulta);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                data:r,
+                msg: 'Lista de Admins con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar Listar Admins'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+
+//List ChangeStatusAdmin
+AdminController.ChangeStatusAdmin = async (req) => {
+    //existe este usuario? 
+    try {       
+            let Consulta="";           
+
+
+            //ASIGNAR CONSULTA
+            Consulta="UPDATE  usersadmin SET  status='"+req.statusAdmin+"' where code='"+req.codeAdmin+"'";
+            
+            console.log(Consulta);                     
+
+            let msgError="";            
+
+             let response ={};
+             response = await User.ListUsers(Consulta);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                statusAdmin:req.statusAdmin,
+                msg: 'Cambio de status con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar Listar Admins'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+
+//List Publicaciones
+AdminController.ListPublications = async (req) => {
+    //existe este usuario? 
+    try {       
+            let Consulta="";           
+
+
+            //ASIGNAR CONSULTA
+            if(req.TypeConsulta==0){
+                Consulta="SELECT * FROM usersadmin";//SIN FILTRO
+            }
+            if(req.TypeConsulta==1){
+                Consulta="SELECT * FROM usersadmin where status='"+req.TypeConsulta+"'";//FILTRAR POR USUARIOS ACTIVOS
+            }
+            if(req.TypeConsulta==2){
+                Consulta="SELECT * FROM usersadmin where status!=1";//FILTRAR POR USUARIOS INACTIVOS
+            }
+            console.log(Consulta);                     
+
+            let msgError="";            
+
+             let response ={};
+             response = await User.ListUsers(Consulta);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                data:r,
+                msg: 'Lista de Admins con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar Listar Admins'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+
 //CreateCategory
 AdminController.CreateCategory = async (req) => {
     //existe este usuario? 
@@ -794,6 +973,74 @@ AdminController.ListCategorys = async (req) => {
             }
              //DEFINIR SATATUS DE USERS
              let Consulta="";
+             if(req.TypeP==1){
+                 Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO
+             }
+             if(req.TypeP==2){
+                Consulta="SELECT * FROM mastercategory WHERE typepublication=2 ";//SUBASTAKEAR
+             }
+             if(req.TypeP==3){
+                Consulta="SELECT * FROM mastercategory WHERE typepublication=3 ";//SERVITAKASTEAR
+             }
+
+            let msgError="";            
+
+             let response ={};
+
+        // && lengthkw<=topeKW 
+             response = await Product.ListPublications(Consulta);
+                 
+        
+        //console.log(msgError);
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            //console.log(response.result);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+
+            data = {
+                success: true,
+                status: '200',
+                data:r,
+                msg: 'Lista de Publicaciones con éxito'
+                //data: response
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+               // data: response.error,
+               // data: msgError,
+                msg: 'Error al intentar Listar Publicaciones'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+//LisTakasteos
+AdminController.LisTakasteos = async (req) => {
+    //existe este usuario? 
+    try {       
+            let status=0;
+           let  Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO
+            if(req.idUser!=null){
+                Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO ID USER 
+            }
+           
+             //DEFINIR SATATUS DE USERS
              if(req.TypeP==1){
                  Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO
              }

@@ -609,6 +609,73 @@ router.post('/listusers',[
 
 })
 
+//Listar Admin- 
+router.post('/listadmin',[
+    check('TypeConsulta', 'El TypeConsulta es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListAdmins(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Cambiar status Admin- 
+router.post('/changestatusadmin',[
+    check('statusAdmin', 'El statusAdmin es obligatorio').not().isEmpty().exists(),
+    check('codeAdmin', 'El codeAdmin es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusAdmin(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+//listar las publicaciones de un User- 
+router.post('/listpublicationsuser',[
+    check('idUser', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('statusPublications', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusAdmin(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
 
 //Listar Publicaciones 
 /**
@@ -731,6 +798,24 @@ router.post('/listcategorys',[
     }
 
     let response = await AdminController.ListCategorys(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+}) 
+
+//Listar Takaesos - 
+router.post('/Takasteos', async (req, res) => {
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.LisTakasteos(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
