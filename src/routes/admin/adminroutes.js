@@ -675,6 +675,30 @@ router.post('/listpublicationsuser',[
 
 })
 
+//listar las publicaciones de un User- 
+router.post('/listpublicationsuserid',[
+    check('idUser', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('statusP', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListPublicationsUserId(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+
 
 
 //Listar Publicaciones 
@@ -741,7 +765,7 @@ router.post('/listpublicationsuser',[
  */
 
 //Listar Usuarios- 
-router.post('/listpublications', rutasProtegidas,[
+router.post('/listpublications',[
     check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
     check('StatusP', 'El StatusP es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
@@ -751,8 +775,31 @@ router.post('/listpublications', rutasProtegidas,[
     if (error.array().length != 0) {
         return res.status(422).json({ errores: error.array(), msg: 'Error' });
     }
+    
+    let response = await AdminController.ListPublications2(req.body);
 
-    let response = await AdminController.ListPublications(req.body);
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+//Cambuar status publications- 
+router.post('/changestatuspublication',[
+    check('idP', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('statusP', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusPublication(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
