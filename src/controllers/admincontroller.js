@@ -2007,11 +2007,11 @@ AdminController.listPublicationsUsersConsole = async (req) => {
             };
 
             let consultaR ="SELECT COUNT(*) AS cant_row FROM `product` WHERE iduser="+req.user_id+" AND  status ="+req.status;
-            let consulta = "SELECT * FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" limit "+sqlData.limit+" offset "+sqlData.offset;
+            let consulta = "SELECT * FROM `product` AS p INNER JOIN `imgproduct` AS i ON p.`id`=i.`idproduct` WHERE p.iduser="+req.user_id+" AND p.status ="+req.status+" limit "+sqlData.limit+" offset "+sqlData.offset;
             
             if(req.column){
-                consulta = "SELECT * FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" AND "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
-                consultaR = "SELECT COUNT(*) AS cant_row  FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" AND  "+req.column+"  LIKE '%"+req.value+"%' ";
+                consulta = "SELECT * FROM `product`AS p INNER JOIN `imgproduct` AS i ON p.`id`=i.`idproduct` WHERE p.iduser="+req.user_id+" AND p.status ="+req.status+" AND p."+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM `product`  WHERE iduser="+req.user_id+" AND status ="+req.status+" AND  "+req.column+"  LIKE '%"+req.value+"%' ";
             }
 
             let msgError="";    

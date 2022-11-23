@@ -633,7 +633,7 @@ userModel.CantMemberShiprequests = (inicio, fin) => {
 
 /**** */
 
-userModel.ListUsersConsole = (sqlData) => {
+userModel.ListUsersConsole = (sqlData, name) => {
     return new Promise((resolve, reject) => {
         if (pool)
         console.log(sqlData);
