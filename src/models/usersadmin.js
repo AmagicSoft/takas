@@ -97,7 +97,7 @@ userAdminModel.CheckCode = (code) => {
      if (pool) {
          
          pool.query(
-            'SELECT * FROM usersadmin WHERE code=?  AND STATUS IS NULL', code,
+            'SELECT * FROM usersadmin WHERE code=?  ', code,
              (err, result) => {
                  console.log(err);
                  console.log("result.length");

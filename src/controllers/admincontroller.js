@@ -152,6 +152,8 @@ AdminController.NewAdminUser = async (req,sess) => {
 
             /*COMPROBAR CODIGO*/
             let codigo="";
+
+            console.log("codigo");
             
             codigo= await UserAdmin.CheckCode(req.codeAdmin);
 
@@ -209,7 +211,7 @@ AdminController.NewAdminUser = async (req,sess) => {
 
             let r = {};
             r = response.result;
-            //console.log(response.result);
+            console.log(response.result);
             if(response.result.length>0){
                 datar=response.result[0]
             }
@@ -1144,7 +1146,7 @@ AdminController.ListCategorys = async (req) => {
              //DEFINIR SATATUS DE USERS
              let Consulta="";
              if(req.TypeP==1){
-                 Consulta="SELECT * FROM mastercategory WHERE typepublication=1 ";//TAKASTEO
+                 Consulta="SELECT * FROM mastercategory WHERE typepublication=1 and status =1";//TAKASTEO
              }
              if(req.TypeP==2){
                 Consulta="SELECT * FROM mastercategory WHERE typepublication=2 ";//SUBASTAKEAR
@@ -1894,6 +1896,197 @@ AdminController.CantMemberShiprequests = async (req) => {
     }
 
 };
+
+/** SERVICIOS PARA SALIR A PRODUCCIÓN */
+
+///////////////Listar Usuarios con paginación
+AdminController.ListUsersConsole = async (req) => {
+    //existe este usuario? 
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+
+            let consultaR ="SELECT COUNT(*) AS cant_row FROM users WHERE status ="+req.status;
+            let consulta = "SELECT * FROM users WHERE status ="+req.status+" limit "+sqlData.limit+" offset "+sqlData.offset;
+            
+            if(req.column){
+                consulta = "SELECT * FROM users WHERE status ="+req.status+" AND "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM users WHERE status ="+req.status+" AND  "+req.column+"  LIKE '%"+req.value+"%' ";
+            }
+
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersConsole(consulta,'users');
+             cant_row = await User.ListUsersConsole(consultaR,'users');
+             console.log("cant_row");
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.round(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR+1;  
+                }  
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                list_users: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'Lista de Usuarios exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar listar usuarios'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
+///////////////Listar publicaciones de un  Usuario específico con paginación
+AdminController.listPublicationsUsersConsole = async (req) => {
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+
+            let consultaR ="SELECT COUNT(*) AS cant_row FROM `product` WHERE iduser="+req.user_id+" AND  status ="+req.status;
+            let consulta = "SELECT * FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" limit "+sqlData.limit+" offset "+sqlData.offset;
+            
+            if(req.column){
+                consulta = "SELECT * FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" AND "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM `product` WHERE iduser="+req.user_id+" AND status ="+req.status+" AND  "+req.column+"  LIKE '%"+req.value+"%' ";
+            }
+
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersConsole(consulta,'listp');
+             cant_row = await User.ListUsersConsole(consultaR,'listp');
+             console.log("cant_row");
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.round(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR+1;  
+                }              
+                 
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = {
+              publicatinos: response.result
+            };
+            
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                list_publications: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'Lista de Publicaciones por  Usuario especifico exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar Listar publicaciones por usuario'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
+/** FIN  */
 
 
 

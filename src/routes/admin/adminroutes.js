@@ -1397,6 +1397,64 @@ router.post('/cantusersregistrados', async (req, res) => {
     return res.status(response.data.status).json(response.data)
 
 })
+/**
+ * SERVICIOS CONSOLA ACORDADA PARA SALIR A PRODUCCIÓN
+ */
+/**
+ * Listar Usuarios del app
+ * con busqueda por campos email y fullname
+ * filtrando por estatus
+ */
+ router.post('/listusersconsole',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListUsersConsole(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+/**
+ * Listar Publicaciones de un Usuario especifico
+ * con busqueda por categoría  y nombre
+ * filtrando por estatus
+ */
+ router.post('/listpublicationsusersconsole',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.listPublicationsUsersConsole(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+/** FIN DE LOS SERVICIO PARA SALIR A PRODUCCIÓN */
 
 /**
  * @api {post} /admin/cantpublications  2 cantpublications

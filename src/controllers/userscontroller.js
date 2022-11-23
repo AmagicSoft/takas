@@ -1261,6 +1261,7 @@ userController.listStatusProduct = async (req) => {
 userController.ListMisProductos = async (req) => {
     try {
         let estatus=0;
+        //let  iduser= req.idfirebaseUser
         const UserData = {
             iduser: req.idfirebaseUser
         };
@@ -1271,7 +1272,7 @@ userController.ListMisProductos = async (req) => {
                 estatus=req.statusProduct;    
         }
         
-        //console.log(userData.password);
+        console.log(UserData.iduser);
         let response = await Product.ListMisProductos(UserData,ProductData,estatus);
 
        console.log(response);

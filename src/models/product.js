@@ -620,7 +620,8 @@ ProductModel.armaresult = (result) => {
                     console.log(element.location);
                     let location = element.location;
                     //Interested
-                    interested=await ProductModel.interestedSubastacas(element,iduser);
+                    console.log(element.iduser);
+                    interested=await ProductModel.interestedSubastacas(element.iduser);
                         console.log("interested: "+interested.interested[0]);
                         let flagInterested=false;
                         if(interested.interested[0]!= undefined){

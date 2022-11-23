@@ -631,6 +631,34 @@ userModel.CantMemberShiprequests = (inicio, fin) => {
 
 };
 
+/**** */
+
+userModel.ListUsersConsole = (sqlData) => {
+    return new Promise((resolve, reject) => {
+        if (pool)
+        console.log(sqlData);
+            pool.query(
+                sqlData,
+                (err, result) => {
+                    console.log(err);
+                    if (err) {
+                        resolve({
+                            'error': err
+                        })
+                    } else {
+                        resolve({
+                            'result': result
+                        })
+                    }
+
+                }
+            )
+    }
+    )
+
+
+};
+
 
 
 
