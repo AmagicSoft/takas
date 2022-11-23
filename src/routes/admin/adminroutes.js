@@ -1433,6 +1433,7 @@ router.post('/cantusersregistrados', async (req, res) => {
  * filtrando por estatus
  */
  router.post('/listpublicationsusersconsole',[
+    check('user_id', 'El user id es obligatorio').not().isEmpty().exists(),
     check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
     check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
     check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
