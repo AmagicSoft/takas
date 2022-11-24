@@ -2040,7 +2040,7 @@ AdminController.listPublicationsUsersConsole = async (req) => {
                     cantR=cantRR;
                 }
                 else{
-                  cantR=cantRR+1;  
+                  cantR=cantRR;  
                 }              
                  
             }
