@@ -1939,7 +1939,7 @@ AdminController.ListUsersConsole = async (req) => {
              
              let cantR = dataCr / req.items;
              console.log(cantR);
-             let cantRR = Math.round(cantR);
+             let cantRR = Math.ceil(cantR);
              console.log(cantRR);
              
              if (cantRR / 1 == 0) {
@@ -2030,9 +2030,8 @@ AdminController.listPublicationsUsersConsole = async (req) => {
              
              let cantR = dataCr / req.items;
              console.log(cantR);
-             let cantRR = Math.round(cantR);
+             let cantRR = Math.ceil(cantR);
              console.log(cantRR);
-             
              if (cantRR / 1 == 0) {
                  
             } else {
@@ -2040,7 +2039,8 @@ AdminController.listPublicationsUsersConsole = async (req) => {
                     cantR=cantRR;
                 }
                 else{
-                  cantR=cantRR;  
+                  cantR=cantRR; 
+                  
                 }              
                  
             }
