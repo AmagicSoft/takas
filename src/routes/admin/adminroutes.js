@@ -789,8 +789,8 @@ router.post('/listpublications',[
 
 //Cambuar status publications- 
 router.post('/changestatuspublication',[
-    check('idP', 'El idUser es obligatorio').not().isEmpty().exists(),
-    check('statusP', 'El statusPublications es obligatorio').not().isEmpty().exists()
+    check('id_publication', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('flap_status', 'El statusPublications es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
 
     const error = validationResult(req);

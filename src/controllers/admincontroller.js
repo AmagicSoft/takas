@@ -791,11 +791,17 @@ AdminController.ListPublicationsUserId = async (req) => {
 AdminController.ChangeStatusPublication = async (req) => {
     //existe este usuario? 
     try {       
-            let Consulta="";           
+            let Consulta=""; 
+            let status = 5;   
+            let Mensaje = 'El estado de la publicacion ha sido modificada a inhabilitada con exito'       
+            if(req.flap_status == true){
+                status= 1
+                Mensaje = 'El estado de la publicacion ha sido modificada a habilitada con exito'
 
+            }
 
             //ASIGNAR CONSULTA
-             Consulta="UPDATE  product SET  status="+req.statusP+" where id="+req.idP;
+             Consulta="UPDATE  product SET  status="+status+" where id="+req.id_publication;
             
             console.log(Consulta);                     
 
@@ -818,8 +824,8 @@ AdminController.ChangeStatusPublication = async (req) => {
             data = {
                 success: true,
                 status: '200',
-                statusAdmin:req.statusAdmin,
-                msg: 'El estado de la publicacion ha sido modificada con exito'
+                statusPublication:req.flap_status,
+                msg: Mensaje
                 //data: response
             }
         } else {
@@ -1943,7 +1949,7 @@ AdminController.ListUsersConsole = async (req) => {
                     cantR=cantRR;
                 }
                 else{
-                  cantR=cantRR+1;  
+                  cantR=cantRR;  
                 }  
             }
 
