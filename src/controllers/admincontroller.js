@@ -2163,7 +2163,7 @@ AdminController.topMatch = async (req) => {
                 success: true,
                 status: '200',
                 data: data_result,
-                msg: 'Lista de Publicaciones por  Usuario especifico exitosa'
+                msg: 'top de takasteos'
                 
             }
         } else {
@@ -2171,7 +2171,7 @@ AdminController.topMatch = async (req) => {
             data = {
                 success: false,
                 status: '500',
-                msg: 'Error al intentar Listar publicaciones por usuario'
+                msg: 'Error al intentar obtener el top de takasteos'
             }
         }
         //validar si esta llegado vacio
