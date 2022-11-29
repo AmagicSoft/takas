@@ -1455,6 +1455,37 @@ router.post('/cantusersregistrados', async (req, res) => {
 
 })
 
+
+/**
+ * Listar Publicaciones de un Usuario especifico
+ * con busqueda por categoría  y nombre
+ * filtrando por estatus
+ */
+ router.post('/topmatch',[
+    check('user_id', 'El user id es obligatorio').not().isEmpty().exists(),
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.topMatch(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+
 /** FIN DE LOS SERVICIO PARA SALIR A PRODUCCIÓN */
 
 /**

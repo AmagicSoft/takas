@@ -2032,6 +2032,7 @@ AdminController.listPublicationsUsersConsole = async (req) => {
              console.log(cantR);
              let cantRR = Math.ceil(cantR);
              console.log(cantRR);
+             
              if (cantRR / 1 == 0) {
                  
             } else {
@@ -2039,10 +2040,8 @@ AdminController.listPublicationsUsersConsole = async (req) => {
                     cantR=cantRR;
                 }
                 else{
-                  cantR=cantRR; 
-                  
-                }              
-                 
+                  cantR=cantRR;  
+                }  
             }
 
         let data = {};
@@ -2091,6 +2090,99 @@ AdminController.listPublicationsUsersConsole = async (req) => {
     }
 
 };///////////////////////////////
+
+
+///////////////Listar top match (takasteos) con paginación
+AdminController.topMatch = async (req) => {
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+
+            let consultaR ="SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+            let consulta = "SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+            
+            
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersC(consulta,'listp');
+             cant_row = await User.ListUsersC(consultaR,'listp');
+             console.log("cant_row");
+             //console.log(cant_row);
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.ceil(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR;  
+                }  
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = {
+              takasteos: response.result
+            };
+            
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                top_taksteos: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'Lista de Publicaciones por  Usuario especifico exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar Listar publicaciones por usuario'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
 
 /** FIN  */
 
