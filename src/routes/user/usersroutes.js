@@ -1640,6 +1640,9 @@ router.post('/listproductos', rutasProtegidas, [
     "msg": "Error al Buscar Productos"
 }
  **/
+
+
+
 //BUSCAR PUBLICACUONES SEGÚN NOMBRE DEL ARTÍCULO
 router.post('/findproductos', rutasProtegidas, [
     check('IdUserProduct', 'El IdUserProduct es obligatorio').not().isEmpty().exists(),

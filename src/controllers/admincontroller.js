@@ -2187,7 +2187,7 @@ AdminController.topMatch = async (req) => {
 AdminController.detailMatch = async (req) => {
     try {       
            
-            let consulta = "SELECT o.`id` AS idoffer,(SELECT fullname FROM users WHERE idnumbre = o.`iduser`) AS useroffer, (SELECT NAME FROM product WHERE id = o.`idproduct`) AS productoffer,o.`status` AS statusoffer, (SELECT NAME FROM product WHERE id = p.`id`) AS idpublucation, (SELECT fullname FROM users WHERE idnumbre = p.`iduser`) AS userpublication FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` WHERE o.status=7 AND o.`id` = "+req.idoffer;
+            let consulta = "SELECT o.`id` AS offer,(SELECT fullname FROM users WHERE idnumbre = o.`iduser`) AS user_offer, o.`idproduct` AS id_offer, (SELECT NAME FROM product WHERE id = o.`idproduct`) AS product_offer, o.`publication` AS id_publication,(SELECT NAME FROM product WHERE id = o.`publication`) AS publication, (SELECT fullname FROM users WHERE idnumbre = p.`iduser`) AS user_publication FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` WHERE o.status=7 AND o.`id` = "+req.idoffer;
             
             
             let msgError="";    

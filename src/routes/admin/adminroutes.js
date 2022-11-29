@@ -7,6 +7,7 @@ const config = require('../../config/config');
 const {isLoggedIn} = require('../../lib/auth');
 const { check, validationResult } = require('express-validator');
 const AdminController = require('../../controllers/admincontroller');
+const userController = require('../../controllers/userscontroller');
 
 var sess; 
 //let AdminController = {};
@@ -1454,6 +1455,28 @@ router.post('/cantusersregistrados', async (req, res) => {
     return res.status(response.data.status).json(response.data)
 
 })
+
+
+/*BUSCAR PUBLICACUONES SEGÚN NOMBRE DEL ARTÍCULO*/
+router.post('/detailproduct', [
+    check('IdProduct', 'El IdProduct es obligatorio').not().isEmpty().exists()
+    ],async (req, res) => {
+        
+        const error = validationResult(req);
+
+        if (error.array().length != 0) {
+            return res.status(422).json({ errores: error.array(), msg: 'Error' });
+        }
+    
+        let response = await userController.findProduct(req.body);
+    
+        if (response.status == 'ko') {
+            return res.status(500).json({ error: 'Error' })
+        }
+        //console.log(response);
+        return res.status(response.data.status).json(response.data)
+    
+    })
 
 
 /**

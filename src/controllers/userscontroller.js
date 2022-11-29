@@ -1408,6 +1408,47 @@ userController.findProductos = async (req) => {
 
 };
 
+////BUSCAR PUBLICACIONES SEGÚN ID DE LA PUBLICACIÓN
+userController.findProduct = async (req) => {
+    try {
+        
+          let IdProduct=req.IdProduct;
+          let nameProduct=req.nameProduct;
+        console.log(IdProduct);
+        let response = await Product.findProduct(IdProduct);
+
+       //console.log(response);
+
+        let data = {};
+        if (response && response.result) {
+            let r = {};
+            r = response.result;
+
+            data = {
+                success: true,
+                status: '200',
+                data: response.result,
+                msg: 'detalle del producto éxitosa'
+                //data: response
+            }
+        } else {
+
+           // console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al Buscar Productos'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
 
 
 
