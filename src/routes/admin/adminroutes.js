@@ -1457,8 +1457,7 @@ router.post('/cantusersregistrados', async (req, res) => {
 
 
 /**
- * Listar Publicaciones de un Usuario especifico
- * con busqueda por categoría  y nombre
+ * Listar el top match de los uaurios que de sus publicaciones concrean takasteos
  * filtrando por estatus
  */
  router.post('/topmatch',[
@@ -1475,6 +1474,30 @@ router.post('/cantusersregistrados', async (req, res) => {
     }
 
     let response = await AdminController.topMatch(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+/**
+ * Detalle Match
+ * filtrando por estatus
+ */
+ router.post('/matchdetail',[
+    check('idoffer', 'El user id es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.detailMatch(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })

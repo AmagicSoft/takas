@@ -2183,6 +2183,55 @@ AdminController.topMatch = async (req) => {
 
 };///////////////////////////////
 
+///////////////Detalle del takasteo
+AdminController.detailMatch = async (req) => {
+    try {       
+           
+            let consulta = "SELECT o.`id` AS idoffer,(SELECT fullname FROM users WHERE idnumbre = o.`iduser`) AS useroffer, (SELECT NAME FROM product WHERE id = o.`idproduct`) AS productoffer,o.`status` AS statusoffer, (SELECT NAME FROM product WHERE id = p.`id`) AS idpublucation, (SELECT fullname FROM users WHERE idnumbre = p.`iduser`) AS userpublication FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` WHERE o.status=7 AND o.`id` = "+req.idoffer;
+            
+            
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersC(consulta,'listp');
+            
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result =  r;
+            data = {
+                success: true,
+                status: '200',
+                detail_taksteo: data_result,
+                msg: 'Detalle del takasteo exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar obtener el detalle de un takasteo'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
 
 /** FIN  */
 
