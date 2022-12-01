@@ -739,7 +739,7 @@ ProductModel.armaresultDetailProduct = (result) => {
                             "details": element.details,
                             "typemoney": typemoney.result,
                             "marketvalue": Precio,
-                            "typepublication": "Takasteo", //element.typepublication,
+                            "typepublication": "Takas", //element.typepublication,
                             "conditions": element.conditions,
                             "size": element.size,
                             "weight": element.weight,
