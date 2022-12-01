@@ -462,6 +462,36 @@ ProductModel.FindNameCategory = (idCategory) => {
         }
     })
 };
+//FindNameTypeMoney  - Buscar nombre de tipo de moneda
+ProductModel.FindNameTypeMoney = (idMoney) => {
+    //let resultado = {};
+    return new Promise((resolve, reject) => {
+        if (pool) {
+            pool.query(
+                'SELECT name FROM mastermoney WHERE id= ?', idMoney,
+                (err, result) => {
+                    console.log(result);
+                    if (err) {
+                        resolve({
+                            'error': err
+                        })
+                    } else {
+                        //console.log("result "+result);
+                       // console.log("Money");
+                    let mresult = result[0];
+                   // console.log(mresult.preference);
+                        resolve({
+                            'result': mresult.name
+                        })  
+                    }//fin if ImagesProduct.length!=0
+                      
+
+                }
+            )
+            //return resultado;
+        }
+    })
+};
 
 
 
@@ -648,16 +678,19 @@ ProductModel.armaresultDetailProduct = (result) => {
                     console.log(nuevo);
 
                     let FlagProduct=element.status;
-                    let statusProduct=0; //Publicación activa
+                    let statusProduct="Activa"; //Publicación activa
                     let Editable=true; //Publicación activa
                     if(FlagProduct==4){
-                        statusProduct=1; // Publicación Takasteada
+                        statusProduct="Takasteada"; // Publicación Takasteada
                     }
-                    if(FlagProduct==5){
-                        statusProduct=2;//Publicación Elimidada ó Deshabilitada
+                    if(FlagProduct==5 ){
+                        statusProduct="Deshabilitada";//Publicación Elimidada ó Deshabilitada
+                    }
+                    if(FlagProduct==0 ){
+                        statusProduct="Deshabilitada";//Publicación Elimidada ó Deshabilitada
                     }
                     if(FlagProduct==26){
-                        statusProduct=3;//Publicación Editada
+                        statusProduct="Editada";//Publicación Editada
                     
                     }
 
@@ -691,7 +724,10 @@ ProductModel.armaresultDetailProduct = (result) => {
 
                     console.log(element.iduser);
                     interested=false;
-                   
+                    //Preferences
+                    let typemoney = await ProductModel.FindNameTypeMoney(element.typemoney);
+                    //console.log("typemoney");
+                    //console.log(typemoney.name);
                     if(element.typepublication==1){   
                         arr.push({
                             "idproduct": element.idproduct,
@@ -701,16 +737,16 @@ ProductModel.armaresultDetailProduct = (result) => {
                             "subcategory": scresult.name,
                             "name": element.name,
                             "details": element.details,
-                            "typemoney": element.typemoney,
+                            "typemoney": typemoney.result,
                             "marketvalue": Precio,
-                            "typepublication": element.typepublication,
+                            "typepublication": "Takasteo", //element.typepublication,
                             "conditions": element.conditions,
                             "size": element.size,
                             "weight": element.weight,
-                            "status": statusProduct,
-                            "editable": Editable,
+                            "status": statusProduct,//element.status,//statusProduct,
+                            //"editable": Editable,
                             "location": location,
-                            "CantidadOfertas":CantidadOfertas.CantOfertas,
+                            //"CantidadOfertas":CantidadOfertas.CantOfertas,
                             "ProductImages":img.ImagesProduct,
                             "Preferences":prefe.Preferences
                             
@@ -1032,7 +1068,7 @@ ProductModel.ListImagesProduct = (element) => {
 ProductModel.ListPrefrencesProduct = (element) => {
     return new Promise((resolve, reject) => {
         pool.query(
-            'SELECT preference FROM `preferences_product` WHERE idproduct= ?', [element.idproduct],
+            'SELECT mp.`name` AS preference FROM `preferences_product` AS pp   INNER JOIN  `masterpreferences` AS mp ON pp.`preference`=mp.`id` WHERE pp.`idproduct`=?', [element.idproduct],
             (err2, result2) => {
                 //console.log(element.id);   
                 //console.log(element.namec);   
@@ -1042,13 +1078,13 @@ ProductModel.ListPrefrencesProduct = (element) => {
                         'error': err2
                     })
                 } else {     
-                    // console.log(result2); 
+                    console.log(result2); 
                     // console.log(result2.length);
                     let preferences= []; 
                     for(var atr2 in result2){
                     preferences.push(result2[atr2].preference);
                     };  
-                    //console.log(preferences);
+                    console.log(preferences);
                     resolve({                        
                         "Preferences": preferences
                     });
