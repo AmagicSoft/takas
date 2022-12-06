@@ -2106,19 +2106,29 @@ AdminController.topMatch = async (req) => {
                 limit: req.items,
                 offset: pag
             };
+           
 
             let consultaR ="SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
             let consulta = "SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
-            
+            if(req.user_id){
+                console.log("req.user_id"); 
+                console.log(req.user_id); 
+                 consultaR ="SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+                 consulta = "SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";    
+            }
             
             let msgError="";    
              let response ={};
              let cant_row = {};
+             let dataCr = 0;
              response = await User.ListUsersC(consulta,'listp');
              cant_row = await User.ListUsersC(consultaR,'listp');
              console.log("cant_row");
-             //console.log(cant_row);
-             let dataCr = cant_row.result[0].cant_row;
+             console.log(cant_row.result.length);
+             if(cant_row.result.length != 0){
+                dataCr = cant_row.result[0].cant_row;
+             }
+             
              
              let cantR = dataCr / req.items;
              console.log(cantR);
@@ -2153,7 +2163,7 @@ AdminController.topMatch = async (req) => {
             let data_result = {
                 status: req.status,
                 items_per_page: req.items,
-                total_items: cant_row.result[0].cant_row,
+                total_items: dataCr,
                 current_page: req.pag,
                 total_pages: cantR,
                 top_taksteos: r
