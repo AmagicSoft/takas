@@ -476,9 +476,9 @@ ProductModel.FindNameTypeMoney = (idMoney) => {
                             'error': err
                         })
                     } else {
-                        //console.log("result "+result);
+                        console.log("result "+result);
                        // console.log("Money");
-                    let mresult = result[0];
+                    let mresult = result;
                    // console.log(mresult.preference);
                         resolve({
                             'result': mresult.name
