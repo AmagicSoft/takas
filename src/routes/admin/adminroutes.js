@@ -1456,6 +1456,33 @@ router.post('/cantusersregistrados', async (req, res) => {
 
 })
 
+/**
+ * Listar PQRS
+ * buscando por email
+ * filtrando por estatus
+ */
+router.post('/pqrslist',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.PqrsList(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
 
 /*BUSCAR PUBLICACUONES SEGÚN NOMBRE DEL ARTÍCULO*/
 router.post('/detailproduct', [

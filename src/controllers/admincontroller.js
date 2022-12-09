@@ -343,6 +343,10 @@ AdminController.ResponsePQRs = async (req) => {
         // && lengthkw<=topeKW 
             if(status!=0){
              response = await PQRsModel.ResponsePQRs(DataPQRs);
+             let updatepqrs="UPDATE pqrs SET status = 36 WHERE id="+req.idPQRs;
+             let responseupdatepqrs ={};
+             let cant_row = {};
+             responseupdatepqrs = await User.ListUsersConsole(updatepqrs,'users');
             }
             else{
                 response==null;
@@ -2231,6 +2235,98 @@ AdminController.detailMatch = async (req) => {
                 success: false,
                 status: '500',
                 msg: 'Error al intentar obtener el detalle de un takasteo'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
+///////////////Listar PQRS
+AdminController.PqrsList = async (req) => {
+    //existe este usuario? 
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+
+            let consultaR ="SELECT COUNT(*) AS cant_row FROM pqrs WHERE status ="+req.status;
+            let consulta = "SELECT * FROM pqrs WHERE status ="+req.status+" limit "+sqlData.limit+" offset "+sqlData.offset;
+            
+            if(req.column){
+                consulta = "SELECT * FROM pqrs WHERE status ="+req.status+" AND "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM pqrs WHERE status ="+req.status+" AND  "+req.column+"  LIKE '%"+req.value+"%' ";
+            }
+
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersConsole(consulta,'users');
+             cant_row = await User.ListUsersConsole(consultaR,'users');
+             console.log("cant_row");
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.ceil(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR;  
+                }  
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                list_pqrs: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'Lista de PQRS exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar listar usuarios'
             }
         }
         //validar si esta llegado vacio
