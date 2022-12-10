@@ -2585,7 +2585,7 @@ AdminController.TopCategoryPublications = async (req) => {
             let data_result = {
                 status: req.status,
                 items_per_page: req.items,
-                total_items: cant_row.result[0].cant_row,
+                total_items: response.result.length,
                 current_page: req.pag,
                 total_pages: cantR,
                 list_categorys: r
