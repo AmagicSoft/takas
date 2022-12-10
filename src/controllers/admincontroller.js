@@ -2523,6 +2523,192 @@ AdminController.UsersAdminList = async (req) => {
 };///////////////////////////////
 
 
+///////////////Listar las categorias con mas publicaciones
+AdminController.TopCategoryPublications = async (req) => {
+    //existe este usuario? 
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+            //+req.status
+            let consultaR ="SELECT COUNT(*) AS cant_row , p.`subcategory`, msc.`name`, msc.`category`, mc.`namec` FROM `product` AS p INNER JOIN mastersubcategory AS msc ON p.`subcategory` = msc.`idsc` INNER JOIN mastercategory AS mc ON mc.`id`= msc.`category`  GROUP BY p.`subcategory` ORDER BY cant_row DESC";
+            let consulta = "SELECT COUNT(*) AS cant_row, p.`subcategory`, msc.`name`, msc.`category`, mc.`namec` FROM `product` AS p INNER JOIN mastersubcategory AS msc ON p.`subcategory` = msc.`idsc` INNER JOIN mastercategory AS mc ON mc.`id`= msc.`category`  GROUP BY p.`subcategory` ORDER BY cant_row DESC limit "+sqlData.limit+" offset "+sqlData.offset;
+            
+            if(req.column){
+                consulta = "SELECT * FROM usersadmin WHERE "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM usersadmin WHERE  "+req.column+"  LIKE '%"+req.value+"%' ";
+            }
+
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersConsole(consulta,'users');
+             cant_row = await User.ListUsersConsole(consultaR,'users');
+             console.log("cant_row");
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.ceil(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR;  
+                }  
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                list_categorys: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'top de Categorias con mas publicaciones exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar listar top de categorias con mas publicaciones'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
+
+///////////////Listar las categorias con mas me interesa
+AdminController.TopCategoryInterested = async (req) => {
+    //existe este usuario? 
+    try {       
+            let pag = req.pag;
+            if(req.pag == 1){
+                pag = 0
+            }else{
+                pag = (req.pag-1) * req.items;
+            }
+            
+            let   sqlData = {
+                limit: req.items,
+                offset: pag
+            };
+            //+req.status
+            let consultaR ="SELECT COUNT(*) AS cant_row, p.`subcategory`, msc.`name`, mc.`namec` FROM `interested` AS i INNER JOIN `product` AS p ON p.`id`=i.`idproduct` INNER JOIN `mastersubcategory` AS msc ON msc.`idsc`=p.`subcategory` INNER JOIN `mastercategory` AS mc ON mc.`id`=msc.`category` GROUP BY p.`subcategory` ORDER BY cant_row DESC";
+            let consulta = "SELECT COUNT(*) AS cant_row, p.`subcategory`, msc.`name`, mc.`namec` FROM `interested` AS i INNER JOIN `product` AS p ON p.`id`=i.`idproduct` INNER JOIN `mastersubcategory` AS msc ON msc.`idsc`=p.`subcategory` INNER JOIN `mastercategory` AS mc ON mc.`id`=msc.`category` GROUP BY p.`subcategory` ORDER BY cant_row DESC limit "+sqlData.limit+" offset "+sqlData.offset;
+            
+            if(req.column){
+                consulta = "SELECT * FROM usersadmin WHERE "+req.column+" LIKE '%"+req.value+"%' limit "+sqlData.limit+" offset "+sqlData.offset;
+                consultaR = "SELECT COUNT(*) AS cant_row  FROM usersadmin WHERE  "+req.column+"  LIKE '%"+req.value+"%' ";
+            }
+
+            let msgError="";    
+             let response ={};
+             let cant_row = {};
+             response = await User.ListUsersConsole(consulta,'users');
+             cant_row = await User.ListUsersConsole(consultaR,'users');
+             console.log("cant_row");
+             let dataCr = cant_row.result[0].cant_row;
+             
+             let cantR = dataCr / req.items;
+             console.log(cantR);
+             let cantRR = Math.ceil(cantR);
+             console.log(cantRR);
+             
+             if (cantRR / 1 == 0) {
+                 
+            } else {
+                if(cantR<1){
+                    cantR=cantRR;
+                }
+                else{
+                  cantR=cantRR;  
+                }  
+            }
+
+        let data = {};
+        let datar = [];
+        if (response.result) {
+            let r = {};
+            r = response.result;
+            let cantRU = response.result.length;
+            console.log(response.result.length);
+            if(response.result.length>0){
+                datar=response.result[0]
+            }
+
+            let data_result = {
+                status: req.status,
+                items_per_page: req.items,
+                total_items: cant_row.result[0].cant_row,
+                current_page: req.pag,
+                total_pages: cantR,
+                list_categorys: r
+                
+            }
+            data = {
+                success: true,
+                status: '200',
+                data: data_result,
+                msg: 'top de Categorias con mas publicaciones exitosa'
+                
+            }
+        } else {
+            //console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al intentar listar top de categorias con mas publicaciones'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};///////////////////////////////
+
+
 /** FIN  */
 
 
