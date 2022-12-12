@@ -2167,7 +2167,7 @@ AdminController.topMatch = async (req) => {
             let data_result = {
                 status: req.status,
                 items_per_page: req.items,
-                total_items: dataCr,
+                total_items: cant_row.result.length,
                 current_page: req.pag,
                 total_pages: cantR,
                 top_taksteos: r
