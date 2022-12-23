@@ -7,6 +7,7 @@ const config = require('../../config/config');
 const {isLoggedIn} = require('../../lib/auth');
 const { check, validationResult } = require('express-validator');
 const AdminController = require('../../controllers/admincontroller');
+const userController = require('../../controllers/userscontroller');
 
 var sess; 
 //let AdminController = {};
@@ -609,6 +610,97 @@ router.post('/listusers',[
 
 })
 
+//Listar Admin- 
+router.post('/listadmin',[
+    check('TypeConsulta', 'El TypeConsulta es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListAdmins(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Cambiar status Admin- 
+router.post('/changestatusadmin',[
+    check('statusAdmin', 'El statusAdmin es obligatorio').not().isEmpty().exists(),
+    check('codeAdmin', 'El codeAdmin es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusAdmin(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+//listar las publicaciones de un User- 
+router.post('/listpublicationsuser',[
+    check('idUser', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('statusPublications', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusAdmin(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//listar las publicaciones de un User- 
+router.post('/listpublicationsuserid',[
+    check('idUser', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('statusP', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListPublicationsUserId(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+
+
+
 
 //Listar Publicaciones 
 /**
@@ -674,7 +766,7 @@ router.post('/listusers',[
  */
 
 //Listar Usuarios- 
-router.post('/listpublications', rutasProtegidas,[
+router.post('/listpublications',[
     check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
     check('StatusP', 'El StatusP es obligatorio').not().isEmpty().exists()
 ], async (req, res) => {
@@ -684,8 +776,8 @@ router.post('/listpublications', rutasProtegidas,[
     if (error.array().length != 0) {
         return res.status(422).json({ errores: error.array(), msg: 'Error' });
     }
-
-    let response = await AdminController.ListPublications(req.body);
+    
+    let response = await AdminController.ListPublications2(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
@@ -694,6 +786,52 @@ router.post('/listpublications', rutasProtegidas,[
     return res.status(response.data.status).json(response.data)
 
 })
+
+
+//Cambuar status publications- 
+router.post('/changestatuspublication',[
+    check('id_publication', 'El idUser es obligatorio').not().isEmpty().exists(),
+    check('flap_status', 'El statusPublications es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ChangeStatusPublication(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//crear Categorias- 
+router.post('/createcategory',[
+    check('name', 'El nombre es obligatorio').not().isEmpty().exists(),
+    check('TypeP', 'El TypeP es obligatorio').not().isEmpty().exists(),
+    check('icon', 'El link de icon es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.CreateCategory(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+}) 
 
 //Listar Categorias- 
 router.post('/listcategorys',[
@@ -708,6 +846,24 @@ router.post('/listcategorys',[
     }
 
     let response = await AdminController.ListCategorys(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+}) 
+
+//Listar Takaesos - 
+router.post('/Takasteos', async (req, res) => {
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.LisTakasteos(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
@@ -964,7 +1120,7 @@ router.post('/listombotakas', rutasProtegidas,[
  * @apiHeaderExample {varchar}Content-Type:
  *                 "value": "application/json" 
  * 
- * @apiParam {varchar} FlagPQRs  Reqired. PREGUNTA = 0, QUEJAS=1, RESPUESTAS=2, SUGERENCIAS=3, TODO=4
+ * @apiParam {varchar} FlagPQRs  Reqired. PREGUNTA = 0, QUEJAS=1, RESPUESTAS=2, SUGERENCIAS=3,TODO=4, ARCHIVADO= 5
 
  * 
  *
@@ -1095,6 +1251,27 @@ router.post('/listpqrs',[
 }
  */
 
+//Archivar pqrs
+router.post('/deletepqrs',[
+    check('idPQRs', 'El idPQRs es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.DeletePQRs(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
 
 //Eliminación Lógica de Usuario 
 router.post('/DeleteSUser', rutasProtegidas,[
@@ -1108,6 +1285,51 @@ router.post('/DeleteSUser', rutasProtegidas,[
     }
 
     let response = await AdminController.DeleteSUser(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Editar Categoría
+router.post('/updatecategory',[
+    check('idC', 'El idC es obligatorio').not().isEmpty().exists(),
+    check('nameC', 'El nameC es obligatorio').not().isEmpty().exists(),
+    check('typePC', 'El typePC es obligatorio').not().isEmpty().exists(),
+    check('iconC', 'El iconC es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.UpdateCategory(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+//Eliminar Categoría
+router.post('/deletecategory',[
+    check('idC', 'El idC es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.DeleteCategory(req.body);
 
     if (response.status == 'ko') {
         return res.status(500).json({ error: 'Error' })
@@ -1176,6 +1398,271 @@ router.post('/cantusersregistrados', async (req, res) => {
     return res.status(response.data.status).json(response.data)
 
 })
+/**
+ * SERVICIOS CONSOLA ACORDADA PARA SALIR A PRODUCCIÓN
+ */
+/**
+ * Listar Usuarios del app
+ * con busqueda por campos email y fullname
+ * filtrando por estatus
+ */
+ router.post('/listusersconsole',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.ListUsersConsole(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+/**
+ * Listar Publicaciones de un Usuario especifico
+ * con busqueda por categoría  y nombre
+ * filtrando por estatus
+ */
+ router.post('/listpublicationsusersconsole',[
+    check('user_id', 'El user id es obligatorio').not().isEmpty().exists(),
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.listPublicationsUsersConsole(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+/**
+ * Listar PQRS
+ * buscando por email
+ * filtrando por estatus
+ */
+router.post('/pqrslist',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.PqrsList(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+
+/*BUSCAR PUBLICACUONES SEGÚN NOMBRE DEL ARTÍCULO*/
+router.post('/detailproduct', [
+    check('IdProduct', 'El IdProduct es obligatorio').not().isEmpty().exists()
+    ],async (req, res) => {
+        
+        const error = validationResult(req);
+
+        if (error.array().length != 0) {
+            return res.status(422).json({ errores: error.array(), msg: 'Error' });
+        }
+    
+        let response = await userController.findProduct(req.body);
+    
+        if (response.status == 'ko') {
+            return res.status(500).json({ error: 'Error' })
+        }
+        //console.log(response);
+        return res.status(response.data.status).json(response.data)
+    
+    })
+
+
+/**
+ * Listar el top match de los uaurios que de sus publicaciones concrean takasteos
+ * filtrando por estatus
+ */
+ router.post('/topmatch',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.topMatch(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+})
+
+/**
+ * Detalle Match
+ * filtrando por estatus
+ */
+ router.post('/matchdetail',[
+    check('idoffer', 'El user id es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.detailMatch(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+/**
+ * Listar PQRS
+ * buscando por email
+ * filtrando por estatus
+ */
+router.post('/categorylist',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.CategoryList(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+
+/**
+ * Listar usuarios administrativos 
+ * buscando por email y userame
+ * filtrando por estatus
+ */
+router.post('/usersadminlist',[
+    check('status', 'El estatus es obligatorio').not().isEmpty().exists(),
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.UsersAdminList(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+/**
+ * Top Categorias en mas publicaciones
+ */
+router.post('/topcategorypublications',[
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.TopCategoryPublications(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+
+/**
+ * Top Categorias con más interesa
+ */
+router.post('/topcategoryinterested',[
+    check('items', 'la cantidad de items por pagina  es obligatorio').not().isEmpty().exists(),
+    check('pag', 'La pagina a consultar es obligatorio').not().isEmpty().exists()
+], async (req, res) => {
+
+    const error = validationResult(req);
+
+    if (error.array().length != 0) {
+        return res.status(422).json({ errores: error.array(), msg: 'Error' });
+    }
+
+    let response = await AdminController.TopCategoryInterested(req.body);
+
+    if (response.status == 'ko') {
+        return res.status(500).json({ error: 'Error' })
+    }
+    //console.log(response);
+    return res.status(response.data.status).json(response.data)
+
+});
+
+
+
+/** FIN DE LOS SERVICIO PARA SALIR A PRODUCCIÓN */
 
 /**
  * @api {post} /admin/cantpublications  2 cantpublications

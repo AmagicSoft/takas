@@ -435,6 +435,64 @@ ProductModel.FindProductCKW = (idUserProduct,idProduct) => {
     })
 };
 
+//FindProductCKW  - Buscar productos
+ProductModel.FindNameCategory = (idCategory) => {
+    //let resultado = {};
+    return new Promise((resolve, reject) => {
+        if (pool) {
+            pool.query(
+                'SELECT name FROM mastersubcategory WHERE idsc= ?', idCategory,
+                (err, result) => {
+                    //console.log(resut);
+                    if (err) {
+                        resolve({
+                            'error': err
+                        })
+                    } else {
+                        console.log("result "+result);
+                        resolve({
+                            'result': result
+                        })  
+                    }//fin if ImagesProduct.length!=0
+                      
+
+                }
+            )
+            //return resultado;
+        }
+    })
+};
+//FindNameTypeMoney  - Buscar nombre de tipo de moneda
+ProductModel.FindNameTypeMoney = (idMoney) => {
+    //let resultado = {};
+    return new Promise((resolve, reject) => {
+        if (pool) {
+            pool.query(
+                'SELECT name FROM mastermoney WHERE id= ?', idMoney,
+                (err, result) => {
+                    console.log(result);
+                    if (err) {
+                        resolve({
+                            'error': err
+                        })
+                    } else {
+                        console.log("result "+result);
+                       // console.log("Money");
+                    let mresult = result;
+                   // console.log(mresult.preference);
+                        resolve({
+                            'result': mresult.name
+                        })  
+                    }//fin if ImagesProduct.length!=0
+                      
+
+                }
+            )
+            //return resultado;
+        }
+    })
+};
+
 
 
 //LISTAR LOS PRODUCTOS PUBLICADOS POR UN USUARIO - TAKASTEAR 
@@ -540,6 +598,239 @@ ProductModel.findProductos = (nameProduct,IdUserProduct) => {
         }
     })
 };
+
+////BURCAR PUBLICACUONES SEGÚN NOMBRE DEL ARTÍCULO
+ProductModel.findProduct = (IdUserProduct) => {
+    //let resultado = {};
+    //console.log('SELECT * FROM  product AS p INNER JOIN imgproduct ON p.id=idproduct  WHERE iduser= "'+UserData.iduser+'" AND status='+ProductData.status);
+    return new Promise((resolve, reject) => {
+        if (pool) {
+
+            let armaresult={};
+            //consulta para buscar por palabra clave
+            // "SELECT * FROM keywords AS k INNER JOIN keyword_product AS kp ON k.id=kp.idword INNER JOIN product AS p ON kp.idproduct=p.id INNER JOIN  imgproduct AS i ON p.id=i.idproduct WHERE (k.word LIKE '%Intel%' OR p.NAME LIKE '%"+nameProduct+"%')  AND STATUS=3 AND iduser<>'"+IdUserProduct+"' ORDER BY p.datecreated DESC"
+            console.log("SELECT * FROM product as p WHERE   p.id="+IdUserProduct);
+            pool.query(
+                "SELECT *,id AS idproduct FROM product as p WHERE    p.id="+IdUserProduct,
+                async(err, result) => {
+                                     
+                   
+                    if (err) {
+                        resolve({
+                            'error': err
+                        })
+                    } else { 
+                        console.log(result);   //datepublication
+                        armaresult = await ProductModel.armaresultDetailProduct(result); 
+                        //console.log("armaresult: "+armaresult); 
+                        resolve({
+                            'result': armaresult
+                        })
+                    }
+
+                }
+            )
+            //return resultado;
+        }
+    })
+};
+///
+ProductModel.armaresultDetailProduct = (result) => {
+
+    return new Promise(async (resolve, reject) => {
+        let arr = [];
+        
+        
+        try{
+            
+            let img={};
+            let prefe={};
+            let interested={};
+            let CantidadOfertas=0;
+            let idproducs=0;
+            //console.log(result);
+            for (const element of result) {
+                //console.log(element.idproduct+" - "+idproducs);
+                if(element.idproduct!=idproducs){
+                    //console.log("idproducs - "+element.idproduct);
+                    idproducs=element.idproduct;
+                    img=await ProductModel.ListImagesProduct(element);
+                    prefe=await ProductModel.ListPrefrencesProduct(element);
+                    CantidadOfertas=await ProductModel.CantidadOfertas(element);
+                    let Precio=Number.parseFloat(element.marketvalue).toFixed(4);
+
+                    let now = new Date();
+                    let servidor=date.format(now, 'YYYY-MM-DD HH:mm:ss');
+                    //let registro=element.registro;
+                    let registro = new Date(element.datepublication);
+                    let regis = date.format(registro, 'YYYY-MM-DD HH:mm:ss');
+
+                    //console.log(now+" - "+registro);
+
+                    let comprobar_fecha=date.isSameDay(now, registro); 
+                    // console.log(comprobar_fecha+" - ");
+                    // console.log("//////");
+                    console.log(element.conditions);
+                    let nuevo=false;
+                    if (element.conditions==9){
+                         nuevo=true;
+                    }
+                    console.log(nuevo);
+
+                    let FlagProduct=element.status;
+                    let statusProduct="Activa"; //Publicación activa
+                    let Editable=true; //Publicación activa
+                    if(FlagProduct==4){
+                        statusProduct="Takasteada"; // Publicación Takasteada
+                    }
+                    if(FlagProduct==5 ){
+                        statusProduct="Deshabilitada";//Publicación Elimidada ó Deshabilitada
+                    }
+                    if(FlagProduct==0 ){
+                        statusProduct="Deshabilitada";//Publicación Elimidada ó Deshabilitada
+                    }
+                    if(FlagProduct==26){
+                        statusProduct="Editada";//Publicación Editada
+                    
+                    }
+
+                    let rp = await ProductModel.FindProductCKW(element.iduser,element.idproduct);
+                   // console.log(rp);
+                    //console.log(horaServidor);
+                    //console.log(rp.result);
+                    let datepublication = new Date(rp.result.datepublication);
+                    //console.log(datepublication);
+                    ////fecha de creación de producto
+                    let fechacp = date.format(datepublication, 'YYYY-MM-DD HH:mm:ss');
+                    //console.log(now);
+                    let Diferenciafechas=date.subtract(now, datepublication).toMinutes();
+
+                    if(Diferenciafechas>20){
+                        Editable=false;
+                    }
+
+                    //Transformar
+                    let datecreatedt = new Date(element.datecreated);
+                    let datecreated = date.format(datecreatedt, 'YYYY-MM-DD HH:mm:ss');
+                    //location
+                    console.log("location");
+                    console.log(element.location);
+                    let location = element.location;
+                    
+                    let subcategory = await ProductModel.FindNameCategory(element.subcategory);
+                    console.log("subcategory");
+                    let scresult = subcategory.result[0];
+                    console.log(scresult.name);
+
+                    console.log(element.iduser);
+                    interested=false;
+                    //Preferences
+                    let typemoney = await ProductModel.FindNameTypeMoney(element.typemoney);
+                    //console.log("typemoney");
+                    //console.log(typemoney.name);
+                    if(element.typepublication==1){   
+                        arr.push({
+                            "idproduct": element.idproduct,
+                            "datecreated":datecreated,
+                            "iduser": element.iduser,
+                            "nuevo":nuevo,
+                            "subcategory": scresult.name,
+                            "name": element.name,
+                            "details": element.details,
+                            "typemoney": typemoney.result,
+                            "marketvalue": Precio,
+                            "typepublication": "Takas", //element.typepublication,
+                            "conditions": element.conditions,
+                            "size": element.size,
+                            "weight": element.weight,
+                            "status": statusProduct,//element.status,//statusProduct,
+                            //"editable": Editable,
+                            "location": location,
+                            //"CantidadOfertas":CantidadOfertas.CantOfertas,
+                            "ProductImages":img.ImagesProduct,
+                            "Preferences":prefe.Preferences
+                            
+                        });
+                    }
+                    if(element.typepublication==3){ 
+                        let now2 = new Date();
+                        let servidor2=date.format(now, 'YYYY-MM-DD HH:mm:ss');  
+                        let beginSubastakas = new Date(element.datebeginst);
+                        let begin=date.format(beginSubastakas, 'YYYY-MM-DD HH:mm:ss');
+                        let endSubastakas = new Date(element.dateendst);
+                        let end=date.format(endSubastakas, 'YYYY-MM-DD HH:mm:ss');
+                        let valStarted=date.subtract(now2,beginSubastakas).toMinutes();
+                        console.log("valStarted: "+valStarted);
+                        let started=false;
+                        if(valStarted > 0){
+                            started=true;
+                        }
+                        let finished=false;
+                        let valFinished=date.subtract(now2,endSubastakas).toMinutes();
+                        if(valFinished > 0){
+                            finished=true;
+                        }
+                        
+
+                        let fechaserver = new Date();
+                        let fechactual=date.format(fechaserver, 'YYYY-MM-DD HH:mm:ss');
+                        //DETERMINAR SI ES EL TIEMPO DE ACTIVIDAD
+                        let timeActive=false;
+                        let DiferenciafechasInicio=date.subtract(fechaserver, beginSubastakas).toMinutes();
+                        console.log("DiferenciafechasInicio: "+DiferenciafechasInicio );
+                        let DiferenciafechasFin=date.subtract(fechaserver, endSubastakas).toMinutes();
+                        console.log("DiferenciafechasFin: "+DiferenciafechasFin );
+                        let TimeTotal=date.subtract(beginSubastakas, endSubastakas).toMilliseconds();;
+                        let DiferenciafechasFin2=date.subtract(fechaserver, endSubastakas).toMilliseconds();
+
+                        if(DiferenciafechasInicio>=0 && DiferenciafechasFin<0){
+                            timeActive=true;
+                        }
+                        
+//
+                        arr.push({
+                            "idproduct": element.idproduct,
+                            "datecreated":datecreated,                           
+                            "activityTime":timeActive,
+                            "TimeTotal":TimeTotal,
+                            "TimeEnd":DiferenciafechasFin2,
+                            "flagInterested":flagInterested,
+                            "started":started,
+                            "finished":finished,
+                            "begin":begin,
+                            "end":end,
+                            "iduser": element.iduser,
+                            "nuevo": nuevo,
+                            "subcategory": element.subcategory,
+                            "name": element.name,
+                            "details": element.details,
+                            "typemoney": element.typemoney,
+                            "marketvalue": Precio,
+                            "typepublication": element.typepublication,
+                            "conditions": element.conditions,
+                            "size": element.size,
+                            "weight": element.weight,
+                            "status": statusProduct,
+                            "editable": Editable,
+                            "location": location,
+                            "CantidadOfertas":CantidadOfertas.CantOfertas,
+                            "ProductImages":img.ImagesProduct
+                            
+                        });
+                    }
+                   
+                }
+            }//fin for 
+            resolve(arr)
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+    )
+
+} 
+
 ///
 ProductModel.armaresult = (result) => {
 
@@ -620,7 +911,8 @@ ProductModel.armaresult = (result) => {
                     console.log(element.location);
                     let location = element.location;
                     //Interested
-                    interested=await ProductModel.interestedSubastacas(element,iduser);
+                    console.log(element.iduser);
+                    interested=await ProductModel.interestedSubastacas(element.iduser);
                         console.log("interested: "+interested.interested[0]);
                         let flagInterested=false;
                         if(interested.interested[0]!= undefined){
@@ -776,7 +1068,7 @@ ProductModel.ListImagesProduct = (element) => {
 ProductModel.ListPrefrencesProduct = (element) => {
     return new Promise((resolve, reject) => {
         pool.query(
-            'SELECT preference FROM `preferences_product` WHERE idproduct= ?', [element.idproduct],
+            'SELECT mp.`name` AS preference FROM `preferences_product` AS pp   INNER JOIN  `masterpreferences` AS mp ON pp.`preference`=mp.`id` WHERE pp.`idproduct`=?', [element.idproduct],
             (err2, result2) => {
                 //console.log(element.id);   
                 //console.log(element.namec);   
@@ -786,13 +1078,13 @@ ProductModel.ListPrefrencesProduct = (element) => {
                         'error': err2
                     })
                 } else {     
-                    // console.log(result2); 
+                    console.log(result2); 
                     // console.log(result2.length);
                     let preferences= []; 
                     for(var atr2 in result2){
                     preferences.push(result2[atr2].preference);
                     };  
-                    //console.log(preferences);
+                    console.log(preferences);
                     resolve({                        
                         "Preferences": preferences
                     });

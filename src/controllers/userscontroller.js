@@ -1261,6 +1261,7 @@ userController.listStatusProduct = async (req) => {
 userController.ListMisProductos = async (req) => {
     try {
         let estatus=0;
+        //let  iduser= req.idfirebaseUser
         const UserData = {
             iduser: req.idfirebaseUser
         };
@@ -1271,7 +1272,7 @@ userController.ListMisProductos = async (req) => {
                 estatus=req.statusProduct;    
         }
         
-        //console.log(userData.password);
+        console.log(UserData.iduser);
         let response = await Product.ListMisProductos(UserData,ProductData,estatus);
 
        console.log(response);
@@ -1387,6 +1388,47 @@ userController.findProductos = async (req) => {
                 status: '200',
                 data: response.result,
                 msg: 'Busqueda de productos éxitosa'
+                //data: response
+            }
+        } else {
+
+           // console.log(response);
+            data = {
+                success: false,
+                status: '500',
+                msg: 'Error al Buscar Productos'
+            }
+        }
+        //validar si esta llegado vacio
+        return { status: 'ok', data: data };
+    } catch (e) {
+        console.log(e);
+        return { status: 'ko' };
+    }
+
+};
+
+////BUSCAR PUBLICACIONES SEGÚN ID DE LA PUBLICACIÓN
+userController.findProduct = async (req) => {
+    try {
+        
+          let IdProduct=req.IdProduct;
+          let nameProduct=req.nameProduct;
+        console.log(IdProduct);
+        let response = await Product.findProduct(IdProduct);
+
+       //console.log(response);
+
+        let data = {};
+        if (response && response.result) {
+            let r = {};
+            r = response.result;
+
+            data = {
+                success: true,
+                status: '200',
+                data: response.result,
+                msg: 'detalle del producto éxitosa'
                 //data: response
             }
         } else {
