@@ -2127,8 +2127,13 @@ AdminController.topMatch = async (req) => {
              let dataCr = 0;
              response = await User.ListUsersC(consulta,'listp');
              cant_row = await User.ListUsersC(consultaR,'listp');
-             console.log("cant_row");
-             console.log(cant_row.result.length);
+             let cant_row_result = cant_row.result;
+             let result_length = cant_row_result.length;
+             console.log(cant_row);
+             console.log("result_length.result");
+             console.log(result_length);
+             console.log("result_length");
+             console.log(result_length);
              if(cant_row.result.length != 0){
                 dataCr = cant_row.result[0].cant_row;
              }
