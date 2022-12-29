@@ -2122,16 +2122,12 @@ AdminController.topMatch = async (req) => {
             let msgError="";    
              let response ={};
              let cant_row = {};
-             let cant_row_result = [];
-             response = await User.ListUsersC(consulta,'listp');
-             cant_row = await User.ListUsersC(consultaR,'listp');
-             
+             response = await User.ListUsersConsole(consulta,'users');
+             cant_row = await User.ListUsersConsole(consultaR,'users');
+             console.log("cant_row");
              let dataCr = cant_row.result[0].cant_row;
-              //dataCr = cant_row.result[0].cant_row;
              
              let cantR = dataCr / req.items;
-             console.log("cant_row");
-             
              console.log(cantR);
              let cantRR = Math.ceil(cantR);
              console.log(cantRR);
