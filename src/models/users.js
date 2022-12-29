@@ -640,7 +640,7 @@ userModel.ListUsersConsole = (sqlData, name) => {
             pool.query(
                 sqlData,
                 (err, result) => {
-                    console.log(err);
+                    //console.log(err);
                     if (err) {
                         resolve({
                             'error': err
@@ -662,11 +662,11 @@ userModel.ListUsersConsole = (sqlData, name) => {
 userModel.ListUsersC = (sqlData, name) => {
     return new Promise((resolve, reject) => {
         if (pool)
-        console.log(sqlData);
+       // console.log(sqlData);
             pool.query(
                 sqlData,
                 (err, result) => {
-                    console.log(err);
+                    //console.log(err);
                     if (err) {
                         resolve({
                             'error': err
