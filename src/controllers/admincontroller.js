@@ -2123,20 +2123,17 @@ AdminController.topMatch = async (req) => {
              let response ={};
              let cant_row = {};
              let cant_row_result = [];
-             let dataCr = 0;
              response = await User.ListUsersC(consulta,'listp');
              cant_row = await User.ListUsersC(consultaR,'listp');
              
-              dataCr = cant_row.result[0].cant_row;
+             let dataCr = cant_row.result[0].cant_row;
+              //dataCr = cant_row.result[0].cant_row;
              
              let cantR = dataCr / req.items;
+             console.log("cant_row");
+             
              console.log(cantR);
              let cantRR = Math.ceil(cantR);
-             console.log(cantRR);
-             
-             console.log("dataCr");
-             console.log(dataCr);
-            
              console.log(cantRR);
              
              if (cantRR / 1 == 0) {
@@ -2154,10 +2151,7 @@ AdminController.topMatch = async (req) => {
         let datar = [];
         if (response.result) {
             let r = {};
-            r = {
-              takasteos: response.result
-            };
-            
+            r = response.result;
             let cantRU = response.result.length;
             console.log(response.result.length);
             if(response.result.length>0){
