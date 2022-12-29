@@ -2126,30 +2126,17 @@ AdminController.topMatch = async (req) => {
              let dataCr = 0;
              response = await User.ListUsersC(consulta,'listp');
              cant_row = await User.ListUsersC(consultaR,'listp');
-             console.log("cant_row");
-             console.log(cant_row);
              
-              cant_row_result = cant_row.result;
-             console.log("cant_row_result");
-             console.log(cant_row_result)
+              dataCr = cant_row.result[0].cant_row;
              
-             console.log("-------------------");
-             
-             if(cant_row_result.length != 0){
-                dataCr = cant_row_result.cant_row;
-                console.log("-------------------");
-                for (i = 0; i < cant_row_result.length ; i++) {
-                    dataCr =cant_row_result[i].cant_row;
-                  } 
-                  console.log("-------------------");
-             }
-             //dataCr = cant_row_result.cant_row;
-             
-             console.log("dataCr");
-             console.log(dataCr);
              let cantR = dataCr / req.items;
              console.log(cantR);
              let cantRR = Math.ceil(cantR);
+             console.log(cantRR);
+             
+             console.log("dataCr");
+             console.log(dataCr);
+            
              console.log(cantRR);
              
              if (cantRR / 1 == 0) {
