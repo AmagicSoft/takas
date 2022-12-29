@@ -1,17 +1,17 @@
-  module.exports = {
+  /*module.exports = {
      database:{
          host:'localhost',
          user:'root',
          password:'',
          database:'takas'
      }
- }
+ }*/
 
    
 
 
 
-/*var config = {
+var config = {
     user: process.env.SQL_USER,
     database: process.env.SQL_DATABASE,
     password: process.env.SQL_PASSWORD
@@ -23,4 +23,4 @@ if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production
 
   module.exports={
       database:config
-  }*/
+  }
