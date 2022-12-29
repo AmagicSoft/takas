@@ -2112,11 +2112,11 @@ AdminController.topMatch = async (req) => {
             };
            
 
-            let consultaR ="SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
-            let consulta = "SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+            let consultaR ="SELECT o.`status` AS statusoffer, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct` = p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+            let consulta = "SELECT o.`status` AS statusoffer,  p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
             if(req.user_id){
-                 consultaR ="SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
-                 consulta = "SELECT o.`id` AS idoffer,o.`status` AS statusoffer, p.`id` AS idpublucation, p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";    
+                 consultaR ="SELECT o.`status` AS statusoffer,  p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";
+                 consulta = "SELECT o.`status` AS statusoffer,  p.`iduser` AS userpublication,u.`fullname`, COUNT(*) AS cant_row FROM offers AS o INNER JOIN product AS p ON o.`idproduct`=p.`id` INNER JOIN users AS u ON u.`idnumbre`=p.`iduser` WHERE o.status=7 AND p.`iduser` = "+req.user_id+" GROUP BY userpublication ORDER BY cant_row DESC LIMIT 10  OFFSET 0";    
             }
             
             let msgError="";    
