@@ -2121,7 +2121,7 @@ AdminController.topMatch = async (req) => {
             
             let msgError="";    
              let response ={};
-             let cant_row = [];
+             let cant_row = {};
              let cant_row_result = [];
              let dataCr = 0;
              response = await User.ListUsersC(consulta,'listp');
