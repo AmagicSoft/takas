@@ -2130,7 +2130,7 @@ AdminController.topMatch = async (req) => {
              console.log("cant_row");
              console.log(cant_row);
              
-             let cant_row_result = cant_row.result[0];
+             /*let cant_row_result = cant_row.result[0];
              console.log("cant_row_result");
              console.log(cant_row_result)
              
@@ -2142,7 +2142,7 @@ AdminController.topMatch = async (req) => {
              dataCr = cant_row_result.cant_row;
              
              console.log("dataCr");
-             console.log(dataCr);
+             console.log(dataCr);*/
              let cantR = dataCr / req.items;
              console.log(cantR);
              let cantRR = Math.ceil(cantR);
